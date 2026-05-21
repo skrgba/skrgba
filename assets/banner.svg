@@ -1,0 +1,173 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <!-- Sky gradient -->
+    <linearGradient id="sky" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#000000"/>
+      <stop offset="40%" stop-color="#05021a"/>
+      <stop offset="70%" stop-color="#0a0628"/>
+      <stop offset="100%" stop-color="#020010"/>
+    </linearGradient>
+    <!-- Purple wave -->
+    <linearGradient id="purpleWave" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#9945ff" stop-opacity="0"/>
+      <stop offset="15%" stop-color="#9945ff" stop-opacity="0.9"/>
+      <stop offset="50%" stop-color="#d946ef" stop-opacity="1"/>
+      <stop offset="85%" stop-color="#9945ff" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#9945ff" stop-opacity="0"/>
+    </linearGradient>
+    <!-- Green wave -->
+    <linearGradient id="greenWave" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#14F195" stop-opacity="0"/>
+      <stop offset="15%" stop-color="#14F195" stop-opacity="0.8"/>
+      <stop offset="50%" stop-color="#5fffb8" stop-opacity="1"/>
+      <stop offset="85%" stop-color="#14F195" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#14F195" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="thinPurple" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#d946ef" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#d946ef" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#d946ef" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="thinGreen" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5fffb8" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#5fffb8" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#5fffb8" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="centerGlow" cx="50%" cy="60%" r="40%">
+      <stop offset="0%" stop-color="#14F195" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#14F195" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="blur1" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="35"/>
+    </filter>
+    <filter id="blur2" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="12"/>
+    </filter>
+    <filter id="blur3" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4"/>
+    </filter>
+  </defs>
+
+  <!-- Base sky -->
+  <rect width="1920" height="1080" fill="url(#sky)"/>
+
+  <!-- Stars -->
+  <g fill="white">
+    <circle cx="80" cy="60" r="0.8" opacity="0.9"/>
+    <circle cx="240" cy="40" r="1.2" opacity="1"/>
+    <circle cx="180" cy="120" r="0.6" opacity="0.7"/>
+    <circle cx="380" cy="80" r="1" opacity="0.9"/>
+    <circle cx="450" cy="160" r="0.7" opacity="0.6"/>
+    <circle cx="520" cy="40" r="1.4" opacity="1"/>
+    <circle cx="630" cy="100" r="0.8" opacity="0.8"/>
+    <circle cx="720" cy="180" r="1" opacity="0.7"/>
+    <circle cx="820" cy="60" r="0.6" opacity="0.6"/>
+    <circle cx="920" cy="140" r="1.2" opacity="1"/>
+    <circle cx="1040" cy="80" r="0.7" opacity="0.7"/>
+    <circle cx="1140" cy="180" r="1" opacity="0.9"/>
+    <circle cx="1220" cy="60" r="0.8" opacity="0.6"/>
+    <circle cx="1320" cy="120" r="1.3" opacity="1"/>
+    <circle cx="1420" cy="40" r="0.7" opacity="0.7"/>
+    <circle cx="1510" cy="100" r="1" opacity="0.8"/>
+    <circle cx="1610" cy="180" r="0.6" opacity="0.6"/>
+    <circle cx="1700" cy="80" r="1.1" opacity="0.9"/>
+    <circle cx="1800" cy="40" r="0.8" opacity="0.7"/>
+    <circle cx="1880" cy="160" r="1" opacity="0.9"/>
+    <circle cx="60" cy="220" r="0.7"/>
+    <circle cx="160" cy="280" r="1.1"/>
+    <circle cx="260" cy="240" r="0.8" opacity="0.8"/>
+    <circle cx="360" cy="320" r="0.6" opacity="0.7"/>
+    <circle cx="480" cy="260" r="1" opacity="0.9"/>
+    <circle cx="580" cy="340" r="0.7" opacity="0.6"/>
+    <circle cx="680" cy="280" r="1.2"/>
+    <circle cx="780" cy="240" r="0.8" opacity="0.8"/>
+    <circle cx="880" cy="320" r="0.6" opacity="0.6"/>
+    <circle cx="980" cy="280" r="1" opacity="0.9"/>
+    <circle cx="1080" cy="240" r="0.7" opacity="0.7"/>
+    <circle cx="1180" cy="340" r="1.1"/>
+    <circle cx="1280" cy="260" r="0.8" opacity="0.8"/>
+    <circle cx="1380" cy="320" r="0.6" opacity="0.6"/>
+    <circle cx="1480" cy="240" r="1" opacity="0.9"/>
+    <circle cx="1580" cy="280" r="0.7" opacity="0.7"/>
+    <circle cx="1680" cy="340" r="1.2"/>
+    <circle cx="1780" cy="260" r="0.8" opacity="0.8"/>
+    <circle cx="1880" cy="320" r="0.6" opacity="0.6"/>
+    <circle cx="120" cy="400" r="0.9" opacity="0.7"/>
+    <circle cx="220" cy="460" r="0.6" opacity="0.6"/>
+    <circle cx="340" cy="500" r="1" opacity="0.8"/>
+    <circle cx="460" cy="430" r="0.7" opacity="0.7"/>
+    <circle cx="580" cy="490" r="1.1" opacity="0.9"/>
+    <circle cx="700" cy="440" r="0.8"/>
+    <circle cx="820" cy="510" r="0.6" opacity="0.6"/>
+    <circle cx="940" cy="460" r="1"/>
+    <circle cx="1060" cy="500" r="0.7" opacity="0.7"/>
+    <circle cx="1180" cy="430" r="1.2"/>
+    <circle cx="1300" cy="490" r="0.8" opacity="0.8"/>
+    <circle cx="1420" cy="450" r="0.6" opacity="0.6"/>
+    <circle cx="1540" cy="500" r="1" opacity="0.9"/>
+    <circle cx="1660" cy="430" r="0.7"/>
+    <circle cx="1780" cy="490" r="1.1" opacity="0.8"/>
+    <circle cx="1880" cy="450" r="0.6"/>
+  </g>
+
+  <!-- Outer glow blobs -->
+  <ellipse cx="200" cy="450" rx="380" ry="280" fill="#9945ff" opacity="0.15" filter="url(#blur1)"/>
+  <ellipse cx="1700" cy="500" rx="400" ry="300" fill="#14F195" opacity="0.18" filter="url(#blur1)"/>
+  <ellipse cx="960" cy="700" rx="700" ry="200" fill="url(#centerGlow)" filter="url(#blur1)"/>
+
+  <!-- BIG PURPLE WAVE -->
+  <path d="M -100 350 Q 300 100, 700 280 Q 1000 420, 1300 280 Q 1600 130, 2050 320 L 2050 480 Q 1600 290, 1300 440 Q 1000 580, 700 440 Q 300 260, -100 510 Z" fill="url(#purpleWave)" filter="url(#blur2)" opacity="0.85"/>
+
+  <!-- BIG GREEN WAVE (under purple) -->
+  <path d="M -100 480 Q 300 280, 700 440 Q 1000 580, 1300 440 Q 1600 290, 2050 460 L 2050 600 Q 1600 430, 1300 580 Q 1000 720, 700 580 Q 300 410, -100 640 Z" fill="url(#greenWave)" filter="url(#blur2)" opacity="0.9"/>
+
+  <!-- Thin sharp lines (purple) -->
+  <path d="M -100 380 Q 300 130, 700 310 Q 1000 450, 1300 310 Q 1600 160, 2050 350" stroke="url(#thinPurple)" stroke-width="3" fill="none" filter="url(#blur3)" opacity="0.9"/>
+  <path d="M -100 430 Q 300 180, 700 360 Q 1000 500, 1300 360 Q 1600 210, 2050 400" stroke="url(#thinPurple)" stroke-width="2" fill="none" filter="url(#blur3)" opacity="0.7"/>
+
+  <!-- Thin sharp lines (green) -->
+  <path d="M -100 510 Q 300 310, 700 470 Q 1000 610, 1300 470 Q 1600 320, 2050 490" stroke="url(#thinGreen)" stroke-width="3" fill="none" filter="url(#blur3)" opacity="0.95"/>
+  <path d="M -100 560 Q 300 360, 700 520 Q 1000 660, 1300 520 Q 1600 370, 2050 540" stroke="url(#thinGreen)" stroke-width="2" fill="none" filter="url(#blur3)" opacity="0.7"/>
+
+  <!-- Mountain silhouettes - back layer -->
+  <path d="M 0 850 L 100 780 L 220 820 L 340 760 L 480 800 L 620 740 L 780 790 L 920 730 L 1080 780 L 1240 720 L 1400 780 L 1560 730 L 1720 800 L 1860 760 L 1920 790 L 1920 1080 L 0 1080 Z" fill="#020010"/>
+
+  <!-- Mountain silhouettes - front layer (taller, pointier) -->
+  <path d="M 1500 920 L 1560 860 L 1610 880 L 1680 800 L 1750 870 L 1820 820 L 1880 890 L 1920 870 L 1920 1080 L 1500 1080 Z" fill="#000"/>
+  <path d="M 1680 920 L 1740 800 L 1790 870 L 1850 770 L 1900 850 L 1920 830 L 1920 1080 L 1680 1080 Z" fill="#000"/>
+
+  <!-- Ground line -->
+  <rect x="0" y="900" width="1920" height="180" fill="#000"/>
+
+  <!-- Three people silhouettes on the ridge -->
+  <g fill="#000">
+    <!-- Person 1 (left, with backpack, arm raised holding phone) -->
+    <g transform="translate(180, 720)">
+      <ellipse cx="0" cy="0" rx="14" ry="18"/>
+      <path d="M -16 18 L -16 70 L -22 130 L -22 200 L -18 200 L -16 130 L -10 95 L -10 200 L -4 200 L -4 95 L -2 95 L -2 200 L 4 200 L 4 95 L 12 130 L 14 200 L 18 200 L 12 130 L 12 70 L 16 70 L 16 18 Z"/>
+      <!-- backpack -->
+      <rect x="-20" y="35" width="40" height="65" rx="3"/>
+      <!-- raised arm holding phone -->
+      <path d="M 14 25 L 22 5 L 26 -10 L 30 -25" stroke="#000" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <rect x="26" y="-35" width="10" height="14" rx="1"/>
+    </g>
+
+    <!-- Person 2 (middle, walking) -->
+    <g transform="translate(720, 760)">
+      <ellipse cx="0" cy="0" rx="11" ry="14"/>
+      <path d="M -12 14 L -12 60 L -18 120 L -18 180 L -14 180 L -12 120 L -8 90 L -8 180 L -3 180 L -3 90 L 0 90 L 0 180 L 5 180 L 5 90 L 9 120 L 12 180 L 16 180 L 10 120 L 10 60 L 12 60 L 12 14 Z"/>
+    </g>
+
+    <!-- Person 3 (right, holding glowing phone) -->
+    <g transform="translate(1100, 740)">
+      <!-- phone glow -->
+      <circle cx="15" cy="30" r="35" fill="#14F195" opacity="0.5" filter="url(#blur2)"/>
+      <ellipse cx="0" cy="0" rx="12" ry="15"/>
+      <path d="M -13 15 L -13 65 L -20 130 L -20 200 L -16 200 L -13 130 L -8 95 L -8 200 L -3 200 L -3 95 L 1 95 L 1 200 L 6 200 L 6 95 L 10 130 L 13 200 L 17 200 L 11 130 L 13 65 L 13 15 Z"/>
+      <!-- arm extended forward with phone -->
+      <path d="M 10 25 L 22 35" stroke="#000" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <rect x="20" y="30" width="14" height="20" rx="1" fill="#000"/>
+      <rect x="22" y="32" width="10" height="14" fill="#14F195" opacity="0.6"/>
+    </g>
+  </g>
+</svg>

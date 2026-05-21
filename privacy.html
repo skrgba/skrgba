@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Privacy Policy — SKR GBA</title>
+<meta name="description" content="Privacy Policy for SKR GBA — the Game Boy Advance emulator with on-chain licensing on Solana."/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#0a0a0f;--surface:rgba(20,20,32,0.7);--surface-hi:rgba(30,30,48,0.85);
+  --border:rgba(255,255,255,0.08);--border-hi:rgba(255,255,255,0.16);
+  --fg:#ffffff;--fg2:rgba(255,255,255,0.75);--fg3:rgba(255,255,255,0.5);--fg4:rgba(255,255,255,0.35);
+  --purple:#9945FF;--purple-soft:rgba(153,69,255,0.12);
+  --green:#14F195;--green-soft:rgba(20,241,149,0.12);
+  --sans:'Inter',-apple-system,sans-serif;--mono:'JetBrains Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-weight:400;line-height:1.7;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+
+.ambient{
+  position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(circle 800px at 10% 0%, rgba(153,69,255,0.08) 0%, transparent 50%),
+    radial-gradient(circle 600px at 90% 50%, rgba(20,241,149,0.05) 0%, transparent 50%);
+}
+
+nav{
+  position:fixed;top:0;left:0;right:0;height:68px;
+  display:flex;align-items:center;justify-content:space-between;padding:0 2rem;
+  background:rgba(10,10,15,0.8);backdrop-filter:blur(20px) saturate(180%);
+  border-bottom:1px solid var(--border);z-index:1000;
+}
+.nav-logo{display:flex;align-items:center;gap:.7rem;font-weight:700;font-size:.95rem;letter-spacing:.04em}
+.nav-logo-mark{
+  width:36px;height:36px;border-radius:9px;overflow:hidden;
+  background:#000;box-shadow:0 0 0 1px rgba(255,255,255,0.08),0 0 24px rgba(153,69,255,0.4);
+  flex-shrink:0;
+}
+.nav-logo-mark img{width:100%;height:100%;object-fit:cover;display:block}
+.nav-links{display:flex;gap:2rem;list-style:none;align-items:center}
+.nav-links a{font-size:.875rem;color:var(--fg3);transition:color .15s;font-weight:500}
+.nav-links a:hover,.nav-links a.on{color:var(--fg)}
+.nav-links a.on{color:var(--green)}
+
+.container{max-width:880px;margin:0 auto;padding:0 2rem;position:relative;z-index:10}
+
+.page-head{padding:140px 0 4rem;text-align:center;position:relative;z-index:10}
+.page-tag{
+  display:inline-block;font-family:var(--mono);font-size:.72rem;font-weight:500;
+  color:var(--green);letter-spacing:.18em;text-transform:uppercase;
+  margin-bottom:1rem;padding:.35rem .9rem;background:var(--green-soft);
+  border:1px solid rgba(20,241,149,0.2);border-radius:100px;
+}
+h1{font-size:clamp(2.5rem,5vw,3.75rem);font-weight:800;letter-spacing:-.03em;line-height:1.1;margin-bottom:1rem}
+.page-meta{color:var(--fg3);font-size:.9rem;font-family:var(--mono)}
+
+.toc{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:16px;padding:2rem;margin-bottom:4rem;
+}
+.toc-title{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--fg3);font-weight:600;margin-bottom:1rem}
+.toc ol{list-style:none;counter-reset:toc-counter;display:grid;grid-template-columns:1fr 1fr;gap:.5rem 2rem}
+.toc li{counter-increment:toc-counter;font-size:.92rem}
+.toc li::before{content:counter(toc-counter,decimal-leading-zero);color:var(--fg4);font-family:var(--mono);font-size:.78rem;margin-right:.6rem;font-weight:500}
+.toc a{color:var(--fg2);transition:color .15s}
+.toc a:hover{color:var(--fg)}
+
+.prose{padding-bottom:6rem;position:relative;z-index:10}
+.prose section{margin-bottom:3rem}
+.prose h2{
+  font-size:1.5rem;font-weight:700;letter-spacing:-.01em;
+  margin-bottom:1.25rem;padding-bottom:.75rem;border-bottom:1px solid var(--border);
+  display:flex;align-items:baseline;gap:1rem;
+}
+.prose h2 .num{font-family:var(--mono);font-size:.78rem;font-weight:500;color:var(--green);letter-spacing:.12em}
+.prose h3{font-size:1.05rem;font-weight:600;margin:1.5rem 0 .5rem;color:var(--fg)}
+.prose p{font-size:.97rem;color:var(--fg2);line-height:1.75;margin-bottom:1rem}
+.prose p a{color:var(--green);text-decoration:underline;text-underline-offset:3px}
+.prose ul{list-style:none;margin:1rem 0}
+.prose ul li{
+  position:relative;padding-left:1.5rem;margin-bottom:.6rem;
+  font-size:.97rem;color:var(--fg2);line-height:1.7;
+}
+.prose ul li::before{
+  content:'';position:absolute;left:0;top:.7em;
+  width:6px;height:6px;border-radius:50%;
+  background:linear-gradient(135deg,var(--purple),var(--green));
+}
+.prose strong{color:var(--fg);font-weight:600}
+.prose code{background:rgba(255,255,255,0.08);padding:.15rem .45rem;border-radius:4px;font-family:var(--mono);font-size:.88em}
+
+.callout{
+  background:var(--purple-soft);border:1px solid rgba(153,69,255,0.3);
+  border-radius:12px;padding:1.25rem 1.5rem;margin:1.5rem 0;
+  font-size:.95rem;color:var(--fg);
+}
+.callout strong{color:var(--green)}
+
+.contact-box{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:16px;padding:2rem;margin-top:2rem;text-align:center;
+}
+.contact-box h3{margin-top:0 !important;font-size:1.15rem;margin-bottom:.5rem}
+.contact-box p{margin-bottom:1rem}
+.contact-btn{
+  display:inline-flex;align-items:center;gap:.5rem;
+  padding:.75rem 1.5rem;background:var(--fg);color:#000;
+  border-radius:10px;font-weight:600;font-size:.9rem;transition:all .15s;
+}
+.contact-btn:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(255,255,255,0.15)}
+
+footer{
+  border-top:1px solid var(--border);padding:2.5rem 0;
+  background:rgba(0,0,0,0.4);position:relative;z-index:10;
+  font-size:.85rem;color:var(--fg3);
+}
+.footer-inner{
+  max-width:880px;margin:0 auto;padding:0 2rem;
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:1rem;
+}
+.footer-links{display:flex;gap:1.5rem;list-style:none}
+.footer-links a{color:var(--fg3);transition:color .15s}
+.footer-links a:hover{color:var(--fg)}
+
+@media(max-width:768px){
+  nav{padding:0 1.25rem}
+  .nav-links{gap:1rem}
+  .nav-links li:not(.always){display:none}
+  .container{padding:0 1.25rem}
+  .toc ol{grid-template-columns:1fr}
+  .footer-inner{flex-direction:column;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<div class="ambient"></div>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-mark"><img src="assets/logo.png" alt="SKR GBA"/></div>
+    <span>SKR GBA</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html#features">Features</a></li>
+    <li><a href="index.html#pricing">Pricing</a></li>
+    <li><a href="index.html#faq">FAQ</a></li>
+    <li><a href="privacy.html" class="on always">Privacy</a></li>
+    <li class="always"><a href="terms.html">Terms</a></li>
+  </ul>
+</nav>
+
+<header class="page-head">
+  <div class="container">
+    <div class="page-tag">/ Legal · Privacy</div>
+    <h1>Privacy Policy</h1>
+    <div class="page-meta">Effective: May 10, 2026 · Last updated: May 10, 2026 · SKR GBA v1.0</div>
+  </div>
+</header>
+
+<div class="container">
+  <div class="toc">
+    <div class="toc-title">Table of contents</div>
+    <ol>
+      <li><a href="#intro">Introduction</a></li>
+      <li><a href="#summary">Privacy summary</a></li>
+      <li><a href="#data">Data we don't collect</a></li>
+      <li><a href="#wallet">Wallet data</a></li>
+      <li><a href="#rpc">Blockchain & RPC</a></li>
+      <li><a href="#device">On-device storage</a></li>
+      <li><a href="#permissions">Permissions</a></li>
+      <li><a href="#thirdparty">Third parties</a></li>
+      <li><a href="#children">Children's privacy</a></li>
+      <li><a href="#changes">Changes</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ol>
+  </div>
+</div>
+
+<main class="container prose">
+
+  <section id="intro">
+    <h2><span class="num">01</span>Introduction</h2>
+    <p>This Privacy Policy describes how SKR GBA ("we," "the app," "the developer") handles information when you use the SKR GBA Android application. We have built SKR GBA with privacy as a foundational principle: <strong>we do not collect, store, or transmit personal data about you</strong>.</p>
+    <p>This policy applies to the SKR GBA app distributed via the Solana Seeker dApp Store. SKR GBA is proprietary software — the application's compiled APK and on-chain payment transactions are themselves the verifiable record of how the app behaves.</p>
+  </section>
+
+  <section id="summary">
+    <h2><span class="num">02</span>Privacy summary</h2>
+    <div class="callout">
+      <strong>Short version:</strong> SKR GBA has no servers, no accounts, no user database, no analytics, no telemetry, and no advertising. It does not transmit any personal information to the developer or any third party. The only network activity is reading public data from the Solana blockchain.
+    </div>
+    <ul>
+      <li>We have <strong>no backend server</strong> that could store user data.</li>
+      <li>We do <strong>not require account creation</strong> or any personal identifiers (no name, email, phone, address).</li>
+      <li>We do <strong>not use analytics, telemetry, crash reporters,</strong> or advertising SDKs.</li>
+      <li>We never see your <strong>private keys, seed phrases,</strong> or wallet passwords — they stay in your wallet app.</li>
+      <li>The only personal-adjacent information is your <strong>public Solana wallet address</strong>, which is used only on your device.</li>
+    </ul>
+  </section>
+
+  <section id="data">
+    <h2><span class="num">03</span>Data we don't collect</h2>
+    <p>To be explicit about what SKR GBA does <em>not</em> collect:</p>
+    <ul>
+      <li>No name, email address, phone number, or postal address</li>
+      <li>No device identifiers (IMEI, advertising ID, hardware ID)</li>
+      <li>No location data of any kind</li>
+      <li>No contacts, photos, microphone, camera, or sensor data</li>
+      <li>No usage analytics, session tracking, or behavioral data</li>
+      <li>No crash reports or diagnostic telemetry</li>
+      <li>No browsing history or device app inventory</li>
+      <li>No payment card numbers or banking information</li>
+    </ul>
+    <p>The app contains no Google Firebase, no Crashlytics, no AppsFlyer, no Mixpanel, no advertising SDKs, and no third-party trackers of any kind.</p>
+  </section>
+
+  <section id="wallet">
+    <h2><span class="num">04</span>Wallet data</h2>
+    <p>When you connect a Solana wallet to SKR GBA, the following happens — entirely on your device:</p>
+    <h3>What the app sees</h3>
+    <ul>
+      <li><strong>Your public Solana wallet address</strong> (also called a "public key" — e.g. <code>CsdU...jrUr</code>). This is a public identifier on the Solana blockchain, not secret information.</li>
+      <li>An <strong>authorization token</strong> issued by your wallet app via the Mobile Wallet Adapter (MWA) standard, used to sign payment transactions.</li>
+    </ul>
+    <h3>What the app never sees</h3>
+    <ul>
+      <li>Your <strong>private key</strong> or <strong>seed phrase</strong> — these never leave your wallet app</li>
+      <li>Your wallet's <strong>password</strong> or biometric data</li>
+      <li>The contents of <strong>other wallets</strong> on your device</li>
+    </ul>
+    <h3>Where this data goes</h3>
+    <p>Your public wallet address is stored locally on your device in app SharedPreferences along with the on-chain transaction signature of your license payment. It is used solely to:</p>
+    <ul>
+      <li>Display a shortened version of your address in the app's UI ("Connected: CsdU…jrUr")</li>
+      <li>Identify the on-chain transaction that proves you own a license</li>
+      <li>Restore your license automatically when you reconnect the same wallet on a new install</li>
+    </ul>
+    <p>This data is <strong>never transmitted to the developer</strong> or any third party — it lives only on your device.</p>
+  </section>
+
+  <section id="rpc">
+    <h2><span class="num">05</span>Blockchain & RPC requests</h2>
+    <p>To verify your license payment and restore licenses across reinstalls, SKR GBA reads public data from the Solana blockchain via an RPC (Remote Procedure Call) endpoint.</p>
+    <h3>Which RPC we use</h3>
+    <p>The app sends RPC requests to <strong>Helius</strong> (<code>beta.helius-rpc.com</code>), a publicly available Solana RPC infrastructure provider. These are read-only blockchain queries — the same kind of requests anyone can make against any public Solana RPC.</p>
+    <h3>What is sent</h3>
+    <ul>
+      <li>Your wallet's <strong>public address</strong> (to look up past transactions)</li>
+      <li>Transaction <strong>signatures</strong> (to verify confirmation status)</li>
+      <li>Standard JSON-RPC method calls (e.g. <code>getSignaturesForAddress</code>, <code>getTransaction</code>)</li>
+    </ul>
+    <p>This information is already public on the blockchain — any block explorer (Solscan, Solana Explorer, etc.) can show the same data given your wallet address. Sending the address to an RPC endpoint is required by the design of the Solana network.</p>
+    <h3>Helius' privacy practices</h3>
+    <p>Helius is a third-party Solana infrastructure provider. We have no insight into or control over their internal logging. You can review Helius' privacy policy at <a href="https://www.helius.dev/privacy-policy">helius.dev/privacy-policy</a>.</p>
+  </section>
+
+  <section id="device">
+    <h2><span class="num">06</span>On-device storage</h2>
+    <p>SKR GBA stores the following on your device:</p>
+    <ul>
+      <li><strong>License state</strong> — In app-private SharedPreferences (<code>skrgba_license</code>): the transaction signature of your license payment.</li>
+      <li><strong>Wallet authorization</strong> — The MWA <code>authToken</code> issued by your wallet app (stored only in memory during a session).</li>
+      <li><strong>Game saves</strong> — Save states (<code>.state</code> files) and in-game SRAM data are stored in <code>Documents/SkrGba/</code>.</li>
+      <li><strong>Layout preferences</strong> — Your custom on-screen button positions (<code>layout_v5</code> SharedPreferences).</li>
+      <li><strong>App preferences</strong> — Last opened game title, first-import flag (<code>app_prefs</code> SharedPreferences).</li>
+    </ul>
+    <p>All of this data stays on your device. None of it is transmitted to the developer.</p>
+  </section>
+
+  <section id="permissions">
+    <h2><span class="num">07</span>Permissions</h2>
+    <p>SKR GBA requests only the minimum permissions required to function:</p>
+    <ul>
+      <li><strong><code>android.permission.INTERNET</code></strong> — To send blockchain RPC queries (verify license, restore on reinstall) and to communicate with your wallet app via the Mobile Wallet Adapter protocol.</li>
+      <li><strong><code>android.permission.VIBRATE</code></strong> — To provide haptic feedback when you press on-screen game buttons.</li>
+      <li><strong><code>android.permission.MANAGE_EXTERNAL_STORAGE</code></strong> — To read your Game Boy Advance ROM files from the <code>Documents/SkrGba/ROMs/</code> folder and to persist save states/SRAM there.</li>
+    </ul>
+    <p>The app does <strong>not</strong> request access to your contacts, camera, microphone, location, calendar, SMS, or phone state.</p>
+  </section>
+
+  <section id="thirdparty">
+    <h2><span class="num">08</span>Third parties</h2>
+    <p>SKR GBA interacts with two categories of third parties — both at your initiation:</p>
+    <h3>Your Solana wallet app</h3>
+    <p>To pay your license fee, the app communicates with whichever Solana wallet you have installed (Solana Seed Vault, Phantom, Solflare, etc.) using the standard Mobile Wallet Adapter protocol. The wallet app is responsible for showing you transaction details before you sign. The wallet's own privacy policy governs how it handles your data.</p>
+    <h3>Solana RPC provider</h3>
+    <p>As described above, SKR GBA queries the public Solana blockchain via the Helius RPC endpoint. This is required to verify your license on-chain.</p>
+    <p>SKR GBA does not communicate with any other third party — no analytics services, no ad networks, no cloud backends.</p>
+  </section>
+
+  <section id="children">
+    <h2><span class="num">09</span>Children's privacy</h2>
+    <p>The SKR GBA app does not collect personal data from anyone, including children. We do not target advertising at children and we do not knowingly collect any personally-identifiable information from any user, regardless of age.</p>
+    <p>Please note: connecting a third-party Solana wallet (e.g. Phantom, Solflare) is governed by the wallet provider's own terms of service, which may include their own age requirements. Parents should supervise children's use of cryptocurrency wallets.</p>
+  </section>
+
+  <section id="changes">
+    <h2><span class="num">10</span>Changes to this policy</h2>
+    <p>If we make changes to this Privacy Policy, we will update the "Last updated" date at the top of this page. Significant changes will also be announced via the project's GitHub repository and X account. Continued use of the app after a change constitutes acceptance of the updated policy.</p>
+  </section>
+
+  <section id="contact">
+    <h2><span class="num">11</span>Contact</h2>
+    <p>SKR GBA is developed and maintained by an independent solo developer ("SKRGBA"). For privacy-related questions, data deletion requests, or any other concerns, you can reach us via:</p>
+    <ul>
+      <li>Email: <a href="mailto:seekerboychapter22@gmail.com">seekerboychapter22@gmail.com</a></li>
+      <li>GitHub: <a href="https://github.com/skrgba/skrgba/issues">github.com/skrgba/skrgba/issues</a></li>
+      <li>X / Twitter: <a href="https://x.com/SKRGBA">x.com/SKRGBA</a></li>
+    </ul>
+    <p>If you believe the app violates a Solana Mobile dApp Store policy, you may also contact Solana Mobile directly at <a href="mailto:concerns@dappstore.solanamobile.com">concerns@dappstore.solanamobile.com</a>.</p>
+    <div class="contact-box">
+      <h3>Get in touch</h3>
+      <p>Email is the fastest way to reach the developer about privacy matters.</p>
+      <a href="mailto:seekerboychapter22@gmail.com" class="contact-btn">Email the developer →</a>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div>© 2026 SKR GBA · Built for the Solana ecosystem</div>
+    <ul class="footer-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="privacy.html">Privacy</a></li>
+      <li><a href="terms.html">Terms</a></li>
+      <li><a href="https://github.com/skrgba/skrgba">GitHub</a></li>
+      <li><a href="https://x.com/SKRGBA">X</a></li>
+    </ul>
+  </div>
+</footer>
+
+</body>
+</html>

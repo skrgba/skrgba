@@ -1,0 +1,1404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SKR GBA — Game Boy Advance Emulator on Solana</title>
+<meta name="description" content="SKR GBA is a Game Boy Advance emulator for Android with on-chain licensing on Solana. Pay 0.1 SOL once, play forever. Powered by mGBA libretro core. Built for the Solana Seeker."/>
+<meta name="keywords" content="SKR GBA, Game Boy Advance emulator, Solana, Seeker, dApp, mGBA, blockchain emulator, Android emulator"/>
+<meta name="author" content="SKRGBA"/>
+<meta property="og:title" content="SKR GBA — GBA Emulator on Solana"/>
+<meta property="og:description" content="Pay 0.1 SOL once, play forever. On-chain licensed Game Boy Advance emulator. Built for Solana Seeker."/>
+<meta property="og:url" content="https://skrgba.xyz/"/>
+<meta property="og:type" content="website"/>
+<link rel="canonical" href="https://skrgba.xyz/"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&family=VT323&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#0a0a0f;
+  --bg2:#0f0f18;
+  --bg3:#13131e;
+  --surface:rgba(20,20,32,0.7);
+  --surface-hi:rgba(30,30,48,0.85);
+  --border:rgba(255,255,255,0.08);
+  --border-hi:rgba(255,255,255,0.16);
+  --fg:#ffffff;
+  --fg2:rgba(255,255,255,0.75);
+  --fg3:rgba(255,255,255,0.5);
+  --fg4:rgba(255,255,255,0.35);
+  --purple:#9945FF;
+  --purple-soft:rgba(153,69,255,0.12);
+  --green:#14F195;
+  --green-soft:rgba(20,241,149,0.12);
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  --display:'Bricolage Grotesque','Inter',sans-serif;
+  --serif:'Instrument Serif',serif;
+  --pixel:'VT323',monospace;
+  --mono:'JetBrains Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  background:var(--bg);
+  color:var(--fg);
+  font-family:var(--sans);
+  font-weight:400;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  overflow-x:hidden;
+}
+img,svg{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+
+.ambient{
+  position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:url('assets/banner.svg');
+  background-size:cover;
+  background-position:center top;
+  background-repeat:no-repeat;
+  background-attachment:fixed;
+}
+.ambient::after{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(circle 800px at 10% 0%, rgba(153,69,255,0.18) 0%, transparent 50%),
+    radial-gradient(circle 700px at 90% 30%, rgba(20,241,149,0.12) 0%, transparent 50%),
+    linear-gradient(180deg, rgba(10,10,15,0.25) 0%, rgba(10,10,15,0.78) 50%, rgba(10,10,15,0.96) 100%);
+  pointer-events:none;
+}
+
+/* ==================== LIVING AURORA OVERLAY ==================== */
+.aurora-live{
+  position:fixed;inset:0;pointer-events:none;z-index:1;
+  overflow:hidden;
+  mix-blend-mode:screen;
+}
+.aurora-blob{
+  position:absolute;
+  border-radius:50%;
+  filter:blur(80px);
+  opacity:.5;
+  animation:drift 25s ease-in-out infinite;
+}
+.aurora-blob.a1{width:600px;height:600px;background:radial-gradient(circle,#9945FF 0%,transparent 70%);top:-10%;left:5%}
+.aurora-blob.a2{width:700px;height:700px;background:radial-gradient(circle,#14F195 0%,transparent 70%);top:15%;right:-5%;animation-delay:-8s;animation-direction:reverse}
+.aurora-blob.a3{width:500px;height:500px;background:radial-gradient(circle,#d946ef 0%,transparent 70%);top:45%;left:-10%;animation-delay:-15s}
+.aurora-blob.a4{width:600px;height:600px;background:radial-gradient(circle,#5fffb8 0%,transparent 70%);top:65%;right:0%;animation-delay:-5s;animation-direction:reverse}
+.aurora-blob.a5{width:500px;height:500px;background:radial-gradient(circle,#9945FF 0%,transparent 70%);top:85%;left:30%;animation-delay:-12s}
+@keyframes drift{
+  0%,100%{transform:translate(0,0) scale(1)}
+  33%{transform:translate(80px,-50px) scale(1.15)}
+  66%{transform:translate(-60px,40px) scale(.9)}
+}
+
+/* Aurora light beams - vertical rays */
+.beam{
+  position:absolute;top:0;bottom:50%;width:3px;
+  background:linear-gradient(180deg,transparent 0%,rgba(255,255,255,0.4) 30%,rgba(20,241,149,0.6) 70%,transparent 100%);
+  filter:blur(3px);
+  animation:beam-pulse 6s ease-in-out infinite;
+}
+.beam.b1{left:15%;animation-delay:0s}
+.beam.b2{left:35%;height:60%;animation-delay:-2s;background:linear-gradient(180deg,transparent 0%,rgba(217,70,239,0.5) 50%,transparent 100%)}
+.beam.b3{left:60%;animation-delay:-4s}
+.beam.b4{left:78%;height:40%;animation-delay:-1s;background:linear-gradient(180deg,transparent 0%,rgba(184,122,255,0.5) 50%,transparent 100%)}
+.beam.b5{left:90%;animation-delay:-3s}
+@keyframes beam-pulse{
+  0%,100%{opacity:0;transform:scaleY(.9)}
+  50%{opacity:1;transform:scaleY(1.1)}
+}
+
+/* Twinkling stars overlay */
+.twinkle-stars{position:fixed;inset:0;pointer-events:none;z-index:1}
+.star{
+  position:absolute;
+  width:2px;height:2px;
+  background:white;
+  border-radius:50%;
+  animation:twinkle 3s ease-in-out infinite;
+  box-shadow:0 0 4px white;
+}
+.star.big{width:3px;height:3px;box-shadow:0 0 6px white,0 0 12px rgba(184,122,255,0.5)}
+@keyframes twinkle{
+  0%,100%{opacity:.3;transform:scale(.8)}
+  50%{opacity:1;transform:scale(1.2)}
+}
+
+/* Floating particles */
+.particles{position:fixed;inset:0;pointer-events:none;z-index:2;overflow:hidden}
+.particle{
+  position:absolute;width:4px;height:4px;border-radius:50%;
+  animation:float-up 18s linear infinite;
+}
+.particle.p-purple{background:#9945FF;box-shadow:0 0 12px #9945FF,0 0 24px rgba(153,69,255,0.5)}
+.particle.p-green{background:#14F195;box-shadow:0 0 12px #14F195,0 0 24px rgba(20,241,149,0.5)}
+.particle.p-magenta{background:#d946ef;box-shadow:0 0 12px #d946ef,0 0 24px rgba(217,70,239,0.5)}
+@keyframes float-up{
+  0%{bottom:-10px;opacity:0;transform:translateX(0)}
+  10%{opacity:1}
+  50%{transform:translateX(30px)}
+  90%{opacity:1}
+  100%{bottom:110vh;opacity:0;transform:translateX(-20px)}
+}
+
+/* Mouse-follow glow */
+.mouse-glow{
+  position:fixed;
+  width:400px;height:400px;
+  border-radius:50%;
+  pointer-events:none;
+  z-index:3;
+  background:radial-gradient(circle,rgba(20,241,149,0.15) 0%,transparent 60%);
+  filter:blur(40px);
+  transition:transform .15s ease-out;
+  mix-blend-mode:screen;
+  opacity:0;
+}
+
+/* Pixel art floating decorations */
+.deco-pixel{
+  position:absolute;
+  pointer-events:none;
+  opacity:.3;
+  animation:float-spin 20s ease-in-out infinite;
+  z-index:2;
+}
+.deco-pixel.coin{
+  width:48px;height:48px;
+  background:radial-gradient(circle,#fbbf24 0%,#d97706 100%);
+  border-radius:50%;
+  box-shadow:inset -4px -4px 0 rgba(0,0,0,0.3),0 0 30px rgba(251,191,36,0.6);
+  position:relative;
+}
+.deco-pixel.coin::after{
+  content:'S';position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-weight:800;color:#000;font-size:1.5rem;
+}
+.deco-pixel.dpad{
+  width:40px;height:40px;
+  background:#1a1a26;
+  clip-path:polygon(36% 0,64% 0,64% 36%,100% 36%,100% 64%,64% 64%,64% 100%,36% 100%,36% 64%,0 64%,0 36%,36% 36%);
+  filter:drop-shadow(0 0 12px rgba(153,69,255,0.6));
+}
+.deco-pixel.cart{
+  width:42px;height:50px;
+  background:linear-gradient(180deg,#9945FF 0%,#7c3aed 100%);
+  border-radius:6px 6px 3px 3px;
+  position:relative;
+  filter:drop-shadow(0 0 12px rgba(153,69,255,0.7));
+}
+.deco-pixel.cart::before{
+  content:'';position:absolute;top:6px;left:6px;right:6px;height:22px;
+  background:#1a0a30;border-radius:3px;
+}
+.deco-pixel.ab{
+  display:flex;gap:4px;
+}
+.deco-pixel.ab .b1,.deco-pixel.ab .b2{
+  width:24px;height:24px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:.7rem;color:#000;
+}
+.deco-pixel.ab .b1{background:#14F195;box-shadow:0 0 12px #14F195}
+.deco-pixel.ab .b2{background:#9945FF;box-shadow:0 0 12px #9945FF;color:#fff}
+
+@keyframes float-spin{
+  0%,100%{transform:translate(0,0) rotate(0deg)}
+  25%{transform:translate(20px,-30px) rotate(90deg)}
+  50%{transform:translate(-15px,-50px) rotate(180deg)}
+  75%{transform:translate(-25px,-20px) rotate(270deg)}
+}
+
+/* Scroll-reveal animation */
+.reveal{
+  opacity:0;
+  transform:translateY(30px);
+  transition:opacity .8s ease-out,transform .8s ease-out;
+}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* Grid floor for CTA */
+.grid-floor{
+  position:absolute;bottom:0;left:0;right:0;height:50%;
+  background-image:
+    linear-gradient(rgba(20,241,149,0.15) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(20,241,149,0.15) 1px,transparent 1px);
+  background-size:40px 40px;
+  perspective:500px;
+  transform:perspective(500px) rotateX(60deg) scale(2);
+  transform-origin:bottom;
+  opacity:.4;
+  mask-image:linear-gradient(180deg,transparent 0%,black 50%,black 100%);
+  -webkit-mask-image:linear-gradient(180deg,transparent 0%,black 50%,black 100%);
+  animation:grid-scroll 8s linear infinite;
+  pointer-events:none;
+}
+@keyframes grid-scroll{
+  from{background-position:0 0}
+  to{background-position:0 40px}
+}
+
+nav{
+  position:fixed;top:0;left:0;right:0;height:68px;
+  display:flex;align-items:center;justify-content:space-between;padding:0 2rem;
+  background:rgba(10,10,15,0.8);backdrop-filter:blur(20px) saturate(180%);
+  border-bottom:1px solid var(--border);z-index:1000;
+}
+.nav-logo{display:flex;align-items:center;gap:.7rem;font-weight:700;font-size:.95rem;letter-spacing:.04em}
+.nav-logo-mark{
+  width:36px;height:36px;border-radius:9px;overflow:hidden;
+  background:#000;box-shadow:0 0 0 1px rgba(255,255,255,0.08),0 0 24px rgba(153,69,255,0.4);
+  flex-shrink:0;
+}
+.nav-logo-mark img{width:100%;height:100%;object-fit:cover;display:block}
+.nav-logo span{
+  font-family:var(--display);
+  font-weight:600;
+  font-size:1.05rem;
+  letter-spacing:-.02em;
+  font-variation-settings:"opsz" 24;
+}
+.nav-links{display:flex;gap:2rem;list-style:none;align-items:center}
+.nav-links a{font-size:.875rem;color:var(--fg3);transition:color .15s;font-weight:500}
+.nav-links a:hover{color:var(--fg)}
+.nav-cta{
+  padding:.55rem 1.15rem;background:var(--fg);color:#000 !important;
+  border-radius:8px;font-weight:600;font-size:.85rem;transition:all .15s;
+}
+.nav-cta:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(255,255,255,0.15)}
+
+.container{max-width:1200px;margin:0 auto;padding:0 2rem;position:relative;z-index:10}
+.container-narrow{max-width:920px;margin:0 auto;padding:0 2rem;position:relative;z-index:10}
+
+.hero{padding:160px 0 100px;position:relative;z-index:10}
+.hero-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:5rem;align-items:center}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:.5rem;padding:.4rem 1rem;
+  background:var(--green-soft);border:1px solid rgba(20,241,149,0.25);
+  border-radius:100px;font-size:.75rem;font-weight:600;color:var(--green);
+  letter-spacing:.02em;margin-bottom:1.5rem;
+}
+.hero-badge::before{
+  content:'';width:6px;height:6px;background:var(--green);
+  border-radius:50%;box-shadow:0 0 8px var(--green);
+}
+h1.hero-title{
+  font-family:var(--display);
+  font-size:clamp(2.75rem,5.5vw,4.5rem);
+  font-weight:700;line-height:1;
+  letter-spacing:-.04em;margin-bottom:1.5rem;
+  font-variation-settings:"opsz" 96;
+}
+.hero-title em{
+  font-family:var(--serif);
+  font-style:italic;
+  font-weight:400;
+  letter-spacing:-.02em;
+}
+.hero-title .accent{
+  background:linear-gradient(135deg,var(--purple) 0%,var(--green) 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+}
+.hero-sub{font-size:1.15rem;color:var(--fg2);line-height:1.6;margin-bottom:2rem;max-width:540px}
+.hero-actions{display:flex;gap:.85rem;flex-wrap:wrap;margin-bottom:3rem}
+.btn{
+  display:inline-flex;align-items:center;gap:.5rem;padding:.85rem 1.5rem;
+  font-family:var(--sans);font-size:.9rem;font-weight:600;border-radius:10px;
+  transition:all .15s;cursor:pointer;border:none;
+}
+.btn-primary{background:var(--fg);color:#000}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(255,255,255,0.15)}
+.btn-secondary{
+  background:var(--surface);color:var(--fg);
+  border:1px solid var(--border-hi);backdrop-filter:blur(8px);
+}
+.btn-secondary:hover{background:var(--surface-hi);border-color:rgba(255,255,255,0.25)}
+
+/* Store badges (like Google Play / App Store style) */
+.badge{
+  display:inline-flex;align-items:center;gap:.7rem;
+  padding:.6rem 1.15rem .65rem;
+  background:#000;color:#fff;
+  border:1px solid var(--border-hi);
+  border-radius:12px;
+  text-decoration:none;
+  transition:all .15s;
+  min-height:54px;
+}
+.badge:hover{transform:translateY(-1px);border-color:rgba(255,255,255,0.3);box-shadow:0 8px 24px rgba(0,0,0,0.5)}
+.badge-icon{width:26px;height:26px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.badge-text{display:flex;flex-direction:column;line-height:1.15}
+.badge-sup{font-size:.6rem;color:var(--fg3);letter-spacing:.08em;text-transform:uppercase;font-weight:500}
+.badge-main{font-size:.9rem;font-weight:600;letter-spacing:-.01em;margin-top:.05rem}
+.badge.dappstore{
+  background:linear-gradient(135deg,#000 0%,#0a0028 100%);
+  border-color:rgba(153,69,255,0.4);
+}
+.badge.dappstore .badge-icon{
+  background:linear-gradient(135deg,#9945FF 0%,#14F195 100%);
+  border-radius:6px;
+}
+.badge.x{background:#000;border-color:rgba(255,255,255,0.18)}
+.badge.github{background:#0d1117;border-color:rgba(255,255,255,0.15)}
+
+.hero-meta{display:flex;gap:2rem;flex-wrap:wrap;padding-top:2rem;border-top:1px solid var(--border)}
+.hero-meta-item{font-size:.85rem;color:var(--fg3)}
+.hero-meta-item strong{display:block;color:var(--fg);font-weight:600;margin-bottom:.15rem}
+
+.hero-visual{
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px 0;
+}
+/* Soft single light pool behind device — static, restrained */
+.hero-visual::before{
+  content:'';
+  position:absolute;
+  top:5%;left:50%;
+  transform:translateX(-50%);
+  width:520px;height:520px;
+  background:radial-gradient(
+    circle at center,
+    rgba(184,122,255,0.18) 0%,
+    rgba(95,255,184,0.10) 35%,
+    transparent 65%
+  );
+  filter:blur(50px);
+  z-index:0;
+  pointer-events:none;
+}
+.phone-stage{
+  position:relative;
+  z-index:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  max-width:100%;
+}
+.phone-frame{
+  width:320px;
+  aspect-ratio:1200/2589;
+  border-radius:48px;
+  padding:4px;
+  /* Brushed-ceramic-like frame: tight gradient + side dark stripes */
+  background:
+    linear-gradient(90deg,
+      #0a0a12 0%,
+      #1f1f2a 4%,
+      #2a2a3a 8%,
+      #1a1a24 18%,
+      #14141c 50%,
+      #1a1a24 82%,
+      #2a2a3a 92%,
+      #1f1f2a 96%,
+      #0a0a12 100%
+    );
+  box-shadow:
+    /* Crisp edge */
+    inset 0 0 0 1px rgba(255,255,255,0.06),
+    /* Inner top highlight */
+    inset 0 1px 0 rgba(255,255,255,0.10),
+    /* Subtle ambient (very dim) */
+    0 1px 2px rgba(0,0,0,0.6),
+    /* Main grounding shadow — drops down */
+    0 40px 60px -30px rgba(0,0,0,0.85),
+    /* Far falloff */
+    0 80px 120px -40px rgba(0,0,0,0.7);
+  position:relative;
+  isolation:isolate;
+}
+.phone-screen{
+  width:100%;
+  height:100%;
+  background:#000;
+  border-radius:44px;
+  overflow:hidden;
+  position:relative;
+  box-shadow:
+    inset 0 0 0 1px rgba(0,0,0,0.8),
+    inset 0 0 0 2px rgba(30,30,40,0.5);
+}
+.phone-screen img{
+  width:100%;height:100%;
+  object-fit:cover;
+  object-position:center;
+  display:block;
+}
+/* Mirror floor reflection — cropped container so it only takes its visible height in layout */
+.phone-reflection{
+  margin-top:6px;
+  width:320px;
+  height:120px;        /* explicit visible height — no longer 690px ghost layout */
+  overflow:hidden;
+  border-radius:0 0 24px 24px;
+  position:relative;
+  opacity:0.22;
+  -webkit-mask-image:linear-gradient(180deg, black 0%, transparent 100%);
+          mask-image:linear-gradient(180deg, black 0%, transparent 100%);
+  pointer-events:none;
+  filter:blur(.4px);
+}
+.phone-reflection img{
+  width:100%;
+  display:block;
+  transform:scaleY(-1);     /* flip so bottom of phone appears just below it */
+  transform-origin:top;
+}
+/* Emulator UI */
+.emu-header{
+  padding:2.5rem 1rem .7rem;text-align:center;
+  background:linear-gradient(180deg,rgba(153,69,255,0.15) 0%,transparent 100%);
+}
+.emu-brand{
+  font-size:.95rem;font-weight:800;letter-spacing:.16em;
+  background:linear-gradient(135deg,var(--purple) 0%,var(--green) 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+}
+.emu-wallet-pill{
+  display:inline-flex;align-items:center;gap:.3rem;
+  margin-top:.35rem;padding:.2rem .55rem;
+  background:rgba(20,241,149,0.12);
+  border:1px solid rgba(20,241,149,0.25);
+  border-radius:100px;font-size:.5rem;font-family:var(--mono);
+  color:var(--green);letter-spacing:.05em;
+}
+.emu-wallet-pill::before{content:'';width:5px;height:5px;background:var(--green);border-radius:50%;box-shadow:0 0 6px var(--green)}
+
+/* GBA screen */
+.emu-screen{
+  margin:.4rem .8rem .6rem;
+  aspect-ratio:240/160;
+  background:#000;
+  border:2px solid #1a1a26;
+  border-radius:6px;
+  position:relative;overflow:hidden;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,0.04), 0 0 30px rgba(20,241,149,0.15);
+}
+.emu-screen-content{
+  position:absolute;inset:0;
+  background:linear-gradient(180deg,#5a8a3a 0%,#4a7a30 50%,#3a6a25 100%);
+  display:flex;flex-direction:column;
+  font-family:var(--mono);
+}
+/* Top bar - Pokemon-style HUD */
+.gba-hud{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:4px 6px;background:#000;color:#fff;font-size:6px;font-weight:700;
+}
+.gba-hud span{letter-spacing:.5px}
+/* Battle scene */
+.gba-scene{flex:1;position:relative;padding:6px;display:flex;flex-direction:column;justify-content:space-between}
+.gba-enemy{position:absolute;top:8px;right:14px;text-align:center}
+.gba-pixel{
+  width:28px;height:28px;
+  background:#d97706;
+  clip-path:polygon(50% 0%, 75% 12%, 90% 30%, 95% 50%, 95% 70%, 80% 88%, 60% 95%, 40% 95%, 20% 88%, 5% 70%, 5% 50%, 10% 30%, 25% 12%);
+  position:relative;margin:0 auto;
+  box-shadow:inset -2px -2px 0 rgba(0,0,0,0.3);
+}
+.gba-pixel::before{content:'';position:absolute;top:8px;left:6px;width:4px;height:4px;background:#000;border-radius:50%}
+.gba-pixel::after{content:'';position:absolute;top:8px;right:6px;width:4px;height:4px;background:#000;border-radius:50%}
+.gba-enemy-label{font-size:5px;color:#000;background:#fff;border:1px solid #000;padding:1px 3px;border-radius:2px;margin-top:2px;font-weight:700}
+.gba-player{position:absolute;bottom:30px;left:14px}
+.gba-player-sprite{
+  width:24px;height:30px;background:#2563eb;border-radius:4px 4px 2px 2px;position:relative;
+  box-shadow:inset -2px -2px 0 rgba(0,0,0,0.4);
+}
+.gba-player-sprite::before{
+  content:'';position:absolute;top:3px;left:5px;width:14px;height:10px;
+  background:#fbbf24;border-radius:50%;
+}
+.gba-textbox{
+  position:absolute;bottom:4px;left:4px;right:4px;
+  background:#fff;border:2px solid #000;border-radius:3px;
+  padding:3px 5px;font-size:5px;color:#000;font-weight:700;line-height:1.2;
+}
+
+/* Controls section */
+.emu-controls{padding:.5rem .8rem .8rem;background:linear-gradient(180deg,#0a0a14 0%,#000 100%);flex:1;display:flex;flex-direction:column;justify-content:space-between}
+.emu-utility{display:grid;grid-template-columns:repeat(4,1fr);gap:.3rem;margin-bottom:.8rem}
+.emu-util-btn{
+  padding:.35rem .2rem;background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.08);border-radius:6px;
+  font-size:.5rem;text-align:center;color:var(--fg2);letter-spacing:.05em;
+  font-family:var(--mono);font-weight:600;
+}
+.emu-util-btn.locked{color:var(--fg4)}
+.emu-pad-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:0 .2rem;
+}
+/* D-pad */
+.emu-dpad{
+  position:relative;width:80px;height:80px;
+}
+.emu-dpad-bg{
+  position:absolute;inset:0;
+  background:
+    linear-gradient(0deg,#1a1a26 0%,#0a0a14 100%);
+  clip-path:polygon(36% 0,64% 0,64% 36%,100% 36%,100% 64%,64% 64%,64% 100%,36% 100%,36% 64%,0 64%,0 36%,36% 36%);
+  border-radius:4px;
+}
+.emu-dpad-center{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:30px;height:30px;background:#000;border-radius:50%;
+}
+/* AB cluster */
+.emu-ab{
+  position:relative;width:80px;height:80px;
+  transform:rotate(-25deg);
+}
+.emu-btn-circle{
+  width:34px;height:34px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;color:#000;font-size:.85rem;
+  font-family:var(--sans);
+  box-shadow:inset 0 -3px 0 rgba(0,0,0,0.3),0 2px 8px rgba(0,0,0,0.5);
+}
+.emu-btn-a{
+  position:absolute;top:5px;right:5px;
+  background:linear-gradient(135deg,#5fffb8 0%,#14F195 100%);
+}
+.emu-btn-b{
+  position:absolute;bottom:5px;left:5px;
+  background:linear-gradient(135deg,#b87aff 0%,#9945FF 100%);
+}
+.emu-startselect{
+  display:flex;gap:.5rem;justify-content:center;margin-top:.7rem;
+}
+.emu-ss-btn{
+  padding:.25rem .8rem;background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.1);border-radius:100px;
+  font-size:.48rem;color:var(--fg2);font-family:var(--mono);font-weight:600;letter-spacing:.1em;
+}
+
+.trust-bar{
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  padding:2rem 0;background:rgba(0,0,0,0.3);position:relative;z-index:10;
+}
+.trust-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2rem;align-items:center}
+.trust-item{text-align:center}
+.trust-num{font-family:var(--display);font-size:1.85rem;font-weight:600;color:var(--fg);letter-spacing:-.03em;margin-bottom:.2rem}
+.trust-num .accent{
+  background:linear-gradient(135deg,var(--purple) 0%,var(--green) 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+}
+.trust-label{font-size:.75rem;color:var(--fg3);letter-spacing:.08em;text-transform:uppercase}
+
+.section{padding:6rem 0;position:relative;z-index:10}
+.section-head{text-align:center;max-width:680px;margin:0 auto 4rem}
+.section-tag{
+  display:inline-block;font-family:var(--mono);font-size:.72rem;font-weight:500;
+  color:var(--green);letter-spacing:.18em;text-transform:uppercase;
+  margin-bottom:1rem;padding:.35rem .9rem;background:var(--green-soft);
+  border:1px solid rgba(20,241,149,0.2);border-radius:100px;
+}
+h2.section-title{
+  font-family:var(--display);
+  font-size:clamp(2.25rem,4.5vw,3.25rem);
+  font-weight:600;letter-spacing:-.035em;
+  line-height:1.05;margin-bottom:1rem;
+  font-variation-settings:"opsz" 72;
+}
+h2.section-title em{
+  font-family:var(--serif);
+  font-style:italic;
+  font-weight:400;
+}
+.section-sub{font-size:1.05rem;color:var(--fg2);line-height:1.6;max-width:560px;margin:0 auto}
+
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1rem}
+.feature{
+  padding:2rem;background:var(--surface);border:1px solid var(--border);
+  border-radius:16px;transition:all .2s;position:relative;overflow:hidden;
+}
+.feature::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--purple),var(--green),transparent);
+  opacity:0;transition:opacity .2s;
+}
+.feature:hover{border-color:var(--border-hi);background:var(--surface-hi);transform:translateY(-2px)}
+.feature:hover::before{opacity:1}
+.feature-icon{
+  width:44px;height:44px;display:flex;align-items:center;justify-content:center;
+  background:var(--purple-soft);border:1px solid rgba(153,69,255,0.25);
+  border-radius:12px;margin-bottom:1.25rem;color:var(--purple);
+}
+.feature-icon svg{width:22px;height:22px}
+.feature h3{font-family:var(--display);font-size:1.15rem;font-weight:600;margin-bottom:.5rem;letter-spacing:-.015em}
+.feature p{font-size:.92rem;color:var(--fg2);line-height:1.55}
+
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;position:relative}
+.step{
+  padding:2.25rem 1.75rem;background:var(--surface);
+  border:1px solid var(--border);border-radius:16px;position:relative;
+}
+.step-num{
+  position:absolute;top:-14px;left:1.75rem;
+  width:32px;height:32px;
+  background:linear-gradient(135deg,var(--purple) 0%,var(--green) 100%);
+  color:#000;font-weight:800;font-size:.9rem;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+}
+.step h3{font-family:var(--display);font-size:1.2rem;font-weight:600;margin:.5rem 0 .75rem;letter-spacing:-.015em}
+.step p{font-size:.9rem;color:var(--fg2);line-height:1.6}
+
+.specs-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;overflow:hidden}
+.specs-grid{display:grid;grid-template-columns:1fr 1fr}
+.spec-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:1.1rem 1.75rem;border-bottom:1px solid var(--border);font-size:.9rem;
+}
+.spec-row:last-child,.spec-row:nth-last-child(2){border-bottom:none}
+.spec-row:nth-child(odd){border-right:1px solid var(--border)}
+.spec-label{color:var(--fg3);font-weight:500}
+.spec-value{color:var(--fg);font-weight:600;font-family:var(--mono);font-size:.83rem;text-align:right}
+
+.wallets{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem}
+.wallet{
+  padding:1.5rem;background:var(--surface);border:1px solid var(--border);
+  border-radius:14px;display:flex;align-items:center;gap:1rem;transition:all .2s;
+}
+.wallet:hover{border-color:var(--border-hi)}
+.wallet-icon{
+  width:48px;height:48px;border-radius:10px;
+  background:linear-gradient(135deg,var(--purple) 0%,var(--green) 100%);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;color:#000;font-size:1rem;
+}
+.wallet-name{font-weight:700;font-size:.95rem;margin-bottom:.15rem}
+.wallet-desc{font-size:.78rem;color:var(--fg3)}
+
+.pricing-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem;max-width:900px;margin:0 auto}
+.pricing-card{padding:2.5rem;background:var(--surface);border:1px solid var(--border);border-radius:20px;position:relative}
+.pricing-card.featured{
+  border-color:rgba(153,69,255,0.5);
+  background:linear-gradient(180deg,rgba(153,69,255,0.06) 0%,var(--surface) 100%);
+}
+.pricing-card.featured::before{
+  content:'REQUIRED';position:absolute;top:-12px;left:1.5rem;
+  padding:.3rem .8rem;
+  background:linear-gradient(135deg,var(--purple) 0%,var(--green) 100%);
+  color:#000;font-size:.65rem;font-weight:700;letter-spacing:.1em;border-radius:6px;
+}
+.pricing-card.warning::before{
+  content:'OPTIONAL · ANTI-CHEAT';position:absolute;top:-12px;left:1.5rem;
+  padding:.3rem .8rem;background:rgba(255,165,0,0.15);color:#ffa500;
+  font-size:.65rem;font-weight:700;letter-spacing:.1em;border-radius:6px;
+  border:1px solid rgba(255,165,0,0.3);
+}
+.pricing-name{font-family:var(--display);font-size:1.5rem;font-weight:600;letter-spacing:-.02em;margin-bottom:.3rem}
+.pricing-desc{font-size:.9rem;color:var(--fg3);margin-bottom:1.5rem}
+.pricing-amt{font-family:var(--display);font-size:3.5rem;font-weight:600;letter-spacing:-.05em;margin-bottom:1.5rem;font-variation-settings:"opsz" 96}
+.pricing-amt .currency{font-size:1rem;color:var(--fg3);font-weight:500;margin-left:.4rem}
+.pricing-list{list-style:none;border-top:1px solid var(--border);padding-top:1.5rem}
+.pricing-list li{padding:.55rem 0;font-size:.9rem;color:var(--fg2);display:flex;align-items:flex-start;gap:.65rem}
+.pricing-list li svg{flex-shrink:0;margin-top:3px;color:var(--green)}
+
+.philosophy{
+  margin-top:3rem;padding:2rem;background:var(--surface);
+  border:1px solid var(--border);border-radius:16px;text-align:center;
+}
+.philosophy-title{
+  font-size:.7rem;color:var(--fg3);letter-spacing:.2em;text-transform:uppercase;
+  margin-bottom:.75rem;font-weight:600;
+}
+.philosophy-text{font-size:1.15rem;color:var(--fg);font-weight:500;line-height:1.5;max-width:600px;margin:0 auto}
+
+.faq-list{display:flex;flex-direction:column;gap:.75rem}
+.faq{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:all .15s}
+.faq:hover{border-color:var(--border-hi)}
+.faq summary{
+  padding:1.15rem 1.5rem;font-weight:600;font-size:.97rem;cursor:pointer;
+  list-style:none;display:flex;justify-content:space-between;align-items:center;gap:1rem;
+}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{
+  content:'+';font-size:1.5rem;font-weight:300;color:var(--fg3);
+  transition:transform .2s;line-height:1;
+}
+.faq[open] summary::after{transform:rotate(45deg)}
+.faq-body{padding:0 1.5rem 1.25rem;color:var(--fg2);font-size:.92rem;line-height:1.65}
+.faq-body p+p{margin-top:.75rem}
+.faq-body code{background:rgba(255,255,255,0.08);padding:.1rem .35rem;border-radius:4px;font-family:var(--mono);font-size:.85em}
+
+.developer-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:20px;
+  padding:2.5rem;display:grid;grid-template-columns:auto 1fr auto;gap:2rem;align-items:center;
+}
+.dev-avatar{
+  width:80px;height:80px;border-radius:50%;
+  background:linear-gradient(135deg,var(--purple) 0%,var(--green) 100%);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.8rem;font-weight:800;color:#000;letter-spacing:-.02em;
+}
+.dev-info h3{font-size:1.3rem;font-weight:700;margin-bottom:.3rem}
+.dev-info p{font-size:.92rem;color:var(--fg2);margin-bottom:.5rem;line-height:1.5}
+.dev-meta{display:flex;gap:1.25rem;flex-wrap:wrap;font-size:.82rem;color:var(--fg3)}
+.dev-meta span{display:flex;align-items:center;gap:.4rem}
+.dev-links{display:flex;flex-direction:column;gap:.5rem}
+.dev-link{
+  display:inline-flex;align-items:center;gap:.5rem;padding:.55rem 1rem;
+  background:rgba(255,255,255,0.05);border:1px solid var(--border);
+  border-radius:8px;font-size:.82rem;font-weight:500;color:var(--fg);transition:all .15s;
+}
+.dev-link:hover{background:rgba(255,255,255,0.08);border-color:var(--border-hi)}
+
+.cta-section{padding:6rem 0;text-align:center;position:relative}
+.cta-card{
+  background:linear-gradient(135deg,rgba(153,69,255,0.08) 0%,rgba(20,241,149,0.05) 100%);
+  border:1px solid var(--border-hi);border-radius:24px;
+  padding:4rem 3rem;max-width:780px;margin:0 auto;position:relative;overflow:hidden;
+}
+.cta-card::before{
+  content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;
+  background:radial-gradient(circle,rgba(153,69,255,0.1) 0%,transparent 50%);
+  pointer-events:none;
+}
+.cta-card>*{position:relative;z-index:1}
+.cta-card h2{font-family:var(--display);font-size:clamp(2rem,3.5vw,2.75rem);font-weight:600;letter-spacing:-.03em;margin-bottom:1rem}
+.cta-card p{color:var(--fg2);font-size:1rem;line-height:1.55;margin-bottom:2rem;max-width:500px;margin-left:auto;margin-right:auto}
+
+footer{
+  border-top:1px solid var(--border);padding:3.5rem 0 2rem;
+  background:rgba(0,0,0,0.4);position:relative;z-index:10;
+}
+.footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:3rem;margin-bottom:3rem}
+.footer-logo{display:flex;align-items:center;gap:.7rem;margin-bottom:1rem;font-weight:700;font-size:1.05rem;letter-spacing:.04em}
+.footer-tagline{font-size:.9rem;color:var(--fg3);line-height:1.55;margin-bottom:1.5rem;max-width:280px}
+.footer-socials{display:flex;gap:.6rem}
+.footer-social{
+  width:36px;height:36px;display:flex;align-items:center;justify-content:center;
+  background:var(--surface);border:1px solid var(--border);border-radius:8px;transition:all .15s;
+}
+.footer-social:hover{background:var(--surface-hi);border-color:var(--border-hi);transform:translateY(-2px)}
+.footer-social svg{width:16px;height:16px;color:var(--fg2)}
+.footer-col h4{
+  font-size:.78rem;font-weight:600;color:var(--fg);letter-spacing:.12em;
+  text-transform:uppercase;margin-bottom:1rem;
+}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:.65rem}
+.footer-col a{font-size:.88rem;color:var(--fg3);transition:color .15s}
+.footer-col a:hover{color:var(--fg)}
+.footer-bottom{
+  padding-top:2rem;border-top:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:.78rem;color:var(--fg4);flex-wrap:wrap;gap:1rem;
+}
+.footer-legal{display:flex;gap:1.5rem}
+.footer-legal a{color:var(--fg3);transition:color .15s}
+.footer-legal a:hover{color:var(--fg)}
+
+@media(max-width:900px){
+  nav{padding:0 1.25rem}
+  .nav-links{gap:1rem}
+  .nav-links li:not(:last-child){display:none}
+  .hero{padding:100px 0 40px}
+  .hero-grid{grid-template-columns:1fr;gap:1.5rem}
+  .hero-visual{order:-1;padding:0}
+  .phone-frame,.phone-reflection{width:240px}
+  .phone-reflection{height:80px;margin-top:4px}
+  .hero-visual::before{width:340px;height:340px;top:0}
+  .container,.container-narrow{padding:0 1.25rem}
+  .trust-grid{grid-template-columns:repeat(2,1fr);gap:1.5rem}
+  .section{padding:4rem 0}
+  .steps{grid-template-columns:1fr}
+  .pricing-grid{grid-template-columns:1fr}
+  .specs-grid{grid-template-columns:1fr}
+  .spec-row{border-right:none !important;border-bottom:1px solid var(--border) !important}
+  .spec-row:last-child{border-bottom:none !important}
+  .developer-card{grid-template-columns:1fr;text-align:center}
+  .dev-avatar{margin:0 auto}
+  .dev-meta{justify-content:center}
+  .dev-links{flex-direction:row;justify-content:center}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:2rem}
+  .cta-card{padding:2.5rem 1.5rem}
+  .footer-bottom{flex-direction:column;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<div class="ambient"></div>
+
+<!-- Living aurora layer -->
+<div class="aurora-live">
+  <div class="aurora-blob a1"></div>
+  <div class="aurora-blob a2"></div>
+  <div class="aurora-blob a3"></div>
+  <div class="aurora-blob a4"></div>
+  <div class="aurora-blob a5"></div>
+  <div class="beam b1"></div>
+  <div class="beam b2"></div>
+  <div class="beam b3"></div>
+  <div class="beam b4"></div>
+  <div class="beam b5"></div>
+</div>
+
+<!-- Twinkling stars -->
+<div class="twinkle-stars">
+  <div class="star" style="top:8%;left:5%"></div>
+  <div class="star big" style="top:12%;left:18%;animation-delay:-1s"></div>
+  <div class="star" style="top:6%;left:32%;animation-delay:-2s"></div>
+  <div class="star" style="top:14%;left:45%"></div>
+  <div class="star big" style="top:5%;left:58%;animation-delay:-1.5s"></div>
+  <div class="star" style="top:10%;left:72%;animation-delay:-2.5s"></div>
+  <div class="star" style="top:7%;left:88%"></div>
+  <div class="star big" style="top:22%;left:8%;animation-delay:-.5s"></div>
+  <div class="star" style="top:28%;left:22%;animation-delay:-1.8s"></div>
+  <div class="star" style="top:18%;left:38%;animation-delay:-2.2s"></div>
+  <div class="star" style="top:26%;left:55%"></div>
+  <div class="star big" style="top:20%;left:68%;animation-delay:-1.2s"></div>
+  <div class="star" style="top:24%;left:82%;animation-delay:-.8s"></div>
+  <div class="star" style="top:42%;left:12%"></div>
+  <div class="star big" style="top:38%;left:28%;animation-delay:-1.6s"></div>
+  <div class="star" style="top:46%;left:48%;animation-delay:-2s"></div>
+  <div class="star" style="top:40%;left:62%"></div>
+  <div class="star" style="top:44%;left:78%;animation-delay:-1.3s"></div>
+  <div class="star big" style="top:58%;left:15%;animation-delay:-.7s"></div>
+  <div class="star" style="top:62%;left:35%"></div>
+  <div class="star" style="top:55%;left:52%;animation-delay:-2.3s"></div>
+  <div class="star" style="top:65%;left:72%;animation-delay:-1.1s"></div>
+  <div class="star big" style="top:78%;left:10%"></div>
+  <div class="star" style="top:82%;left:32%;animation-delay:-1.7s"></div>
+  <div class="star" style="top:76%;left:55%;animation-delay:-.9s"></div>
+  <div class="star" style="top:88%;left:78%;animation-delay:-2.1s"></div>
+  <div class="star big" style="top:92%;left:25%;animation-delay:-1.4s"></div>
+  <div class="star" style="top:95%;left:60%"></div>
+</div>
+
+<!-- Floating particles -->
+<div class="particles">
+  <div class="particle p-purple" style="left:5%;animation-delay:0s;animation-duration:20s"></div>
+  <div class="particle p-green" style="left:18%;animation-delay:-3s;animation-duration:22s"></div>
+  <div class="particle p-magenta" style="left:32%;animation-delay:-6s;animation-duration:18s"></div>
+  <div class="particle p-green" style="left:48%;animation-delay:-9s;animation-duration:25s"></div>
+  <div class="particle p-purple" style="left:62%;animation-delay:-12s;animation-duration:19s"></div>
+  <div class="particle p-magenta" style="left:75%;animation-delay:-15s;animation-duration:23s"></div>
+  <div class="particle p-green" style="left:88%;animation-delay:-2s;animation-duration:21s"></div>
+  <div class="particle p-purple" style="left:25%;animation-delay:-5s;animation-duration:24s"></div>
+  <div class="particle p-magenta" style="left:55%;animation-delay:-8s;animation-duration:20s"></div>
+  <div class="particle p-green" style="left:82%;animation-delay:-11s;animation-duration:22s"></div>
+  <div class="particle p-purple" style="left:12%;animation-delay:-14s;animation-duration:18s"></div>
+  <div class="particle p-magenta" style="left:42%;animation-delay:-17s;animation-duration:21s"></div>
+</div>
+
+<!-- Mouse follow glow -->
+<div class="mouse-glow" id="mouseGlow"></div>
+
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-mark"><img src="assets/logo.png" alt="SKR GBA"/></div>
+    <span>SKR GBA</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#specs">Specs</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#faq">FAQ</a></li>
+    <li><a href="https://github.com/skrgba/skrgba" class="nav-cta">View on GitHub</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-badge">Built for Solana Seeker</div>
+        <h1 class="hero-title">Game Boy Advance, <em>signed</em> on Solana.</h1>
+        <p class="hero-sub">Drop in your ROM. Connect your wallet. Pay 0.1 SOL once — and that's it. No accounts. No expiring license. No servers we could ever shut down. The blockchain itself proves you own it.</p>
+        <div class="hero-actions">
+          <a href="#download" class="btn btn-primary">
+            Get the App
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a href="https://solanamobile.com/dapp-store" class="badge dappstore">
+            <div class="badge-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="#000"><path d="M5.5 18.5L7 17h10l1.5 1.5M6 6l1.5 1.5h9L18 6M5 12h14M2 6l3 3M19 9l3-3M2 18l3-3M19 15l3 3"/><path d="M4.3 18.7C2.2 16.6 2 13.7 2 12s.2-4.6 2.3-6.7C6.4 3.2 9.3 3 12 3s5.6.2 7.7 2.3C21.8 7.4 22 10.3 22 12s-.2 4.6-2.3 6.7C17.6 20.8 14.7 21 12 21s-5.6-.2-7.7-2.3z" fill="none" stroke="#fff" stroke-width="1.5"/></svg>
+            </div>
+            <div class="badge-text">
+              <span class="badge-sup">Coming soon to</span>
+              <span class="badge-main">Solana dApp Store</span>
+            </div>
+          </a>
+          <a href="https://x.com/SKRGBA" class="badge x">
+            <div class="badge-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            </div>
+            <div class="badge-text">
+              <span class="badge-sup">Follow us on</span>
+              <span class="badge-main">X · @SKRGBA</span>
+            </div>
+          </a>
+          <a href="https://github.com/skrgba/skrgba" class="badge github">
+            <div class="badge-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.4 3-.405 1.02.005 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+            </div>
+            <div class="badge-text">
+              <span class="badge-sup">View on</span>
+              <span class="badge-main">GitHub</span>
+            </div>
+          </a>
+        </div>
+        <div class="hero-meta">
+          <div class="hero-meta-item"><strong>0.1 SOL</strong>One-time license</div>
+          <div class="hero-meta-item"><strong>Android 8.0+</strong>Minimum requirement</div>
+          <div class="hero-meta-item"><strong>6.8 MB</strong>APK size</div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="phone-stage">
+          <div class="phone-frame">
+            <div class="phone-screen">
+              <img src="assets/emulator-screenshot.png" alt="SKR GBA running Pokémon Smaragd-Edition"/>
+            </div>
+          </div>
+          <div class="phone-reflection" aria-hidden="true">
+            <img src="assets/emulator-screenshot.png" alt=""/>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="trust-bar">
+  <div class="container">
+    <div class="trust-grid">
+      <div class="trust-item">
+        <div class="trust-num"><span class="accent">100%</span></div>
+        <div class="trust-label">On-chain license</div>
+      </div>
+      <div class="trust-item">
+        <div class="trust-num">mGBA</div>
+        <div class="trust-label">libretro core</div>
+      </div>
+      <div class="trust-item">
+        <div class="trust-num">MWA</div>
+        <div class="trust-label">Wallet adapter</div>
+      </div>
+      <div class="trust-item">
+        <div class="trust-num">∞</div>
+        <div class="trust-label">Plays · Forever</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="features" style="position:relative">
+  <div class="deco-pixel coin" style="top:8%;left:5%;animation-delay:0s"></div>
+  <div class="deco-pixel dpad" style="top:35%;right:4%;animation-delay:-7s"></div>
+  <div class="container">
+    <div class="section-head">
+      <div class="section-tag">/ Features</div>
+      <h2 class="section-title">Just the parts that <em>matter</em>.</h2>
+      <p class="section-sub">Built on top of mGBA — the most accurate open-source GBA core out there. No telemetry phoning home. No analytics SDK eating your data. No ads. Just the emulator and your wallet.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+        <h3>mGBA libretro core</h3>
+        <p>Cycle-accurate Game Boy Advance emulation powered by the gold-standard mGBA core. Compiled natively for ARM64, ARMv7 and x86_64.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
+        <h3>On-chain licensing</h3>
+        <p>Your 0.1 SOL license payment is verified directly on the Solana blockchain — no central license server, no API key, no account.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 11-6.219-8.56"/><polyline points="21 4 21 10 15 10"/></svg></div>
+        <h3>License recovery</h3>
+        <p>Reinstalling the app? Switch devices? Reconnect your wallet — the app scans your transaction history and restores your license automatically.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="8" cy="12" r="1.5" fill="currentColor"/><circle cx="16" cy="12" r="1.5" fill="currentColor"/></svg></div>
+        <h3>Customizable controls</h3>
+        <p>Drag and drop every on-screen button. D-pad, A/B cluster, Start/Select and Settings can be repositioned. Layouts saved separately per orientation.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></div>
+        <h3>Save states + SRAM</h3>
+        <p>Save and load game states anywhere. In-game saves (Pokémon, Zelda, etc.) are written to your device's Documents folder — survives uninstalls.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10"/></svg></div>
+        <h3>Fast-forward</h3>
+        <p>1×, 2×, 4× or 8× speed. Skip grinding, breeze through dialogue, finish what you couldn't as a kid.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <h3>Auto-save on pause</h3>
+        <p>Switch to another app or get a call mid-battle? SKR GBA automatically writes a save state when the app is paused. Resume right where you stopped.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07"/></svg></div>
+        <h3>Native rendering</h3>
+        <p>OpenGL ES 2.0 with hardware-accelerated rendering. Haptic feedback on every input. Smooth 60 fps emulation on the Seeker.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg></div>
+        <h3>Cheat codes (optional)</h3>
+        <p>GameShark, Action Replay, and Code Breaker support — but locked behind a 0.2 SOL "Anti-Cheat Fee". We believe games should be earned.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="how" style="position:relative">
+  <div class="deco-pixel ab" style="top:12%;right:5%;animation-delay:-3s"><div class="b1">A</div><div class="b2">B</div></div>
+  <div class="container">
+    <div class="section-head">
+      <div class="section-tag">/ How it works</div>
+      <h2 class="section-title">Wallet in. ROM in. <em>Done.</em></h2>
+      <p class="section-sub">No email signup. No KYC dance. No magic links to your inbox. Your wallet is your account, your license, and your only login — same as every dApp on Solana.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Connect your wallet</h3>
+        <p>Tap "Connect Wallet" in the app. SKR GBA uses the Solana Mobile Wallet Adapter (MWA) — works with Seed Vault on Seeker, Phantom, Solflare, and any other MWA-compatible wallet.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>Pay 0.1 SOL once</h3>
+        <p>The app builds a SOL transfer transaction directly to the treasury wallet. You sign it in your wallet app. The transaction is then verified on-chain before access is granted.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Load a ROM and play</h3>
+        <p>Provide your own legally-obtained GBA ROM file. The app loads it into the mGBA core. Your license persists — reinstall the app, switch devices, your license follows your wallet.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="specs">
+  <div class="container-narrow">
+    <div class="section-head">
+      <div class="section-tag">/ Technical specifications</div>
+      <h2 class="section-title">Every byte, <em>accounted for</em>.</h2>
+      <p class="section-sub">Real specs, no hand-waving. APK is signed, reproducible, and shipped through the Solana Seeker dApp Store — the official review process is the audit.</p>
+    </div>
+    <div class="specs-card">
+      <div class="specs-grid">
+        <div class="spec-row"><span class="spec-label">Application ID</span><span class="spec-value">com.skrgba.seeker</span></div>
+        <div class="spec-row"><span class="spec-label">Version</span><span class="spec-value">1.0 (code 1)</span></div>
+        <div class="spec-row"><span class="spec-label">Minimum Android</span><span class="spec-value">8.0 (API 26)</span></div>
+        <div class="spec-row"><span class="spec-label">Target Android</span><span class="spec-value">15 (API 35)</span></div>
+        <div class="spec-row"><span class="spec-label">Architectures</span><span class="spec-value">arm64 · armv7 · x86_64</span></div>
+        <div class="spec-row"><span class="spec-label">APK size</span><span class="spec-value">~6.8 MB</span></div>
+        <div class="spec-row"><span class="spec-label">Emulator core</span><span class="spec-value">mGBA libretro</span></div>
+        <div class="spec-row"><span class="spec-label">Rendering</span><span class="spec-value">OpenGL ES 2.0</span></div>
+        <div class="spec-row"><span class="spec-label">Wallet protocol</span><span class="spec-value">Solana MWA</span></div>
+        <div class="spec-row"><span class="spec-label">Solana network</span><span class="spec-value">mainnet-beta</span></div>
+        <div class="spec-row"><span class="spec-label">RPC endpoint</span><span class="spec-value">Helius Gatekeeper</span></div>
+        <div class="spec-row"><span class="spec-label">License</span><span class="spec-value">Proprietary</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-tag">/ Wallet compatibility</div>
+      <h2 class="section-title">Bring <em>any</em> wallet.</h2>
+      <p class="section-sub">We use the Mobile Wallet Adapter — the standard Solana protocol every serious wallet implements. We didn't have to whitelist anyone. It just works.</p>
+    </div>
+    <div class="wallets">
+      <div class="wallet">
+        <div class="wallet-icon">SV</div>
+        <div><div class="wallet-name">Solana Seed Vault</div><div class="wallet-desc">Native to Seeker · recommended</div></div>
+      </div>
+      <div class="wallet">
+        <div class="wallet-icon">P</div>
+        <div><div class="wallet-name">Phantom</div><div class="wallet-desc">Most popular Solana wallet</div></div>
+      </div>
+      <div class="wallet">
+        <div class="wallet-icon">S</div>
+        <div><div class="wallet-name">Solflare</div><div class="wallet-desc">Mobile + browser wallet</div></div>
+      </div>
+      <div class="wallet">
+        <div class="wallet-icon">+</div>
+        <div><div class="wallet-name">Any MWA wallet</div><div class="wallet-desc">Open standard, no lock-in</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="pricing" style="position:relative">
+  <div class="deco-pixel cart" style="top:10%;right:6%;animation-delay:-4s"></div>
+  <div class="deco-pixel coin" style="bottom:15%;left:4%;animation-delay:-10s"></div>
+  <div class="container">
+    <div class="section-head">
+      <div class="section-tag">/ Pricing</div>
+      <h2 class="section-title">0.1 SOL. <em>That's the whole price list.</em></h2>
+      <p class="section-sub">One transaction. No tiers, no "pro plan," no in-app currencies. The cheat unlock is its own thing — and yes, on purpose, it costs more than the actual emulator.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card featured">
+        <div class="pricing-name">App License</div>
+        <div class="pricing-desc">Full emulator access, paid once</div>
+        <div class="pricing-amt">0.1<span class="currency">SOL</span></div>
+        <ul class="pricing-list">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Load unlimited GBA ROMs</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Save states + in-game SRAM</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Fast-forward 1×–8×</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Customizable on-screen controls</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Automatic license restore via wallet</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Wallet-tied permanently</li>
+        </ul>
+      </div>
+      <div class="pricing-card warning">
+        <div class="pricing-name">Anti-Cheat Fee</div>
+        <div class="pricing-desc">Optional shame fee to unlock cheats</div>
+        <div class="pricing-amt">0.2<span class="currency">SOL</span></div>
+        <ul class="pricing-list">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Unlocks the cheat code entry dialog</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>GameShark / Action Replay / Code Breaker formats</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Permanently tied to wallet</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Costs more than the license — by design</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Not required to play any game</li>
+        </ul>
+      </div>
+    </div>
+    <div class="philosophy">
+      <div class="philosophy-title">— Why the cheat fee costs more —</div>
+      <div class="philosophy-text">Look — we get it, sometimes you just want to one-shot Brock with a Lv5 Pikachu. But pricing cheats at <strong>twice the emulator itself</strong> is a small speed bump to make you think about it first. Beat the gym leaders the honest way. Or pay the toll.</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="faq">
+  <div class="container-narrow">
+    <div class="section-head">
+      <div class="section-tag">/ FAQ</div>
+      <h2 class="section-title">Frequently asked questions</h2>
+    </div>
+    <div class="faq-list">
+      <details class="faq">
+        <summary>Does SKR GBA include any ROMs?</summary>
+        <div class="faq-body">
+          <p>No. SKR GBA is an emulator only — it does not include, distribute, or host any Game Boy Advance ROM files. You are responsible for providing your own legally-obtained ROMs.</p>
+          <p>The first time you use the app, it creates a folder at <code>Internal Storage → Documents → SkrGba → ROMs</code>. Copy your own ROMs there so the app can find them.</p>
+        </div>
+      </details>
+      <details class="faq">
+        <summary>What happens if I reinstall the app or get a new device?</summary>
+        <div class="faq-body">
+          <p>Your license is tied to your Solana wallet address, not the app installation. After reinstalling or switching devices, just reconnect the same wallet — the app scans your transaction history and automatically restores your license. No re-purchase needed.</p>
+          <p>Your save states and in-game saves are stored in your device's Documents folder and survive app uninstalls on the same device.</p>
+        </div>
+      </details>
+      <details class="faq">
+        <summary>Why pay with SOL instead of a regular in-app purchase?</summary>
+        <div class="faq-body">
+          <p>On-chain licensing is genuinely permanent: there is no central license server we could shut down, no account database we could lose, no subscription that expires. The blockchain itself proves you own the license.</p>
+          <p>It also means no Google Play 30% fee, no payment processor middlemen, and the developer never holds your personal data.</p>
+        </div>
+      </details>
+      <details class="faq">
+        <summary>Which wallets are supported?</summary>
+        <div class="faq-body">
+          <p>Any wallet that implements the Solana Mobile Wallet Adapter (MWA) standard. This includes:</p>
+          <p>• <strong>Solana Seed Vault</strong> (built into the Seeker)<br/>
+          • <strong>Phantom</strong> (mobile app)<br/>
+          • <strong>Solflare</strong> (mobile app)<br/>
+          • Any other MWA-compatible wallet</p>
+          <p>SKR GBA does not require special integration for each wallet — MWA handles it as an open standard.</p>
+        </div>
+      </details>
+      <details class="faq">
+        <summary>Why does the Anti-Cheat Fee cost more than the license?</summary>
+        <div class="faq-body">
+          <p>Intentionally. We believe games are meant to be earned, not bypassed. By charging 0.2 SOL — twice the cost of the actual license — we make cheating expensive enough that most players will pause and reconsider.</p>
+          <p>If you absolutely need cheat codes (replaying old favorites, accessibility, completionist runs), the option is there. But you'll pay for the privilege.</p>
+        </div>
+      </details>
+      <details class="faq">
+        <summary>What permissions does the app need?</summary>
+        <div class="faq-body">
+          <p>SKR GBA only requests the permissions strictly required for emulation:</p>
+          <p>• <strong>INTERNET</strong> — to verify your license on the Solana blockchain<br/>
+          • <strong>VIBRATE</strong> — for haptic feedback on button presses<br/>
+          • <strong>MANAGE_EXTERNAL_STORAGE</strong> — to read your ROM files from the Documents folder</p>
+          <p>No camera, no contacts, no location, no analytics, no tracking SDKs of any kind. You can audit the exact permission list by inspecting the APK manifest yourself.</p>
+        </div>
+      </details>
+      <details class="faq">
+        <summary>What license is SKR GBA under?</summary>
+        <div class="faq-body">
+          <p>SKR GBA itself is proprietary software, copyright © SKRGBA. The application is licensed for personal, non-commercial use to anyone who has paid the 0.1 SOL on-chain license fee. You may not redistribute, repackage, or commercially exploit the app or its code.</p>
+          <p>The underlying <strong>mGBA libretro emulator core</strong> is open source under its own respective license — see <a href="https://mgba.io" style="color:var(--green)">mgba.io</a> for details.</p>
+        </div>
+      </details>
+      <details class="faq">
+        <summary>Can I get a refund?</summary>
+        <div class="faq-body">
+          <p><strong>No. All sales are final. We do not issue refunds under any circumstances.</strong></p>
+          <p>Solana blockchain transactions are irreversible — once a payment is confirmed on-chain, we have no technical way to reverse it. There are no refunds for change of mind, accidental purchases, dissatisfaction, device issues, or any other reason.</p>
+          <p>Before paying, make sure you want to proceed:</p>
+          <p>• Read all features, permissions, and pricing on this page<br/>
+          • Verify the treasury wallet on a Solana block explorer before signing<br/>
+          • Confirm your wallet is on the correct network (mainnet-beta)</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container-narrow">
+    <div class="section-head">
+      <div class="section-tag">/ Developer</div>
+      <h2 class="section-title">Made by one person. <em>For the love of it.</em></h2>
+    </div>
+    <div class="developer-card">
+      <div class="dev-avatar">S</div>
+      <div class="dev-info">
+        <h3>SKRGBA</h3>
+        <p>Independent solo developer focused on bringing native, hardware-grade emulation to the Solana mobile ecosystem. SKR GBA is built and maintained by one person.</p>
+        <div class="dev-meta">
+          <span>Solana ecosystem</span>
+          <span>Independent</span>
+          <span>Self-published</span>
+        </div>
+      </div>
+      <div class="dev-links">
+        <a href="mailto:seekerboychapter22@gmail.com" class="dev-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          Email
+        </a>
+        <a href="https://github.com/skrgba/skrgba" class="dev-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.4 3-.405 1.02.005 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+          GitHub
+        </a>
+        <a href="https://x.com/SKRGBA" class="dev-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          X / Twitter
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section" id="download">
+  <div class="grid-floor"></div>
+  <div class="container">
+    <div class="cta-card">
+      <h2>Soon. On your <em>Seeker</em>.</h2>
+      <p>SKR GBA is in the dApp Store submission pipeline. When it goes live, you'll find it there. Bookmark the page or follow along on X.</p>
+      <div class="hero-actions" style="justify-content:center">
+        <a href="https://x.com/SKRGBA" class="btn btn-primary">
+          Follow for launch updates
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="https://github.com/skrgba/skrgba" class="btn btn-secondary">View on GitHub</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="#" class="footer-logo">
+          <div class="nav-logo-mark"><img src="assets/logo.png" alt="SKR GBA"/></div>
+          <span>SKR GBA</span>
+        </a>
+        <div class="footer-tagline">A Game Boy Advance emulator with on-chain licensing on Solana. Pay once, play forever.</div>
+        <div class="footer-socials">
+          <a href="https://github.com/skrgba/skrgba" class="footer-social" aria-label="GitHub">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.4 3-.405 1.02.005 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+          </a>
+          <a href="https://x.com/SKRGBA" class="footer-social" aria-label="X">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Product</h4>
+        <ul>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#how">How it works</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Technical</h4>
+        <ul>
+          <li><a href="#specs">Specifications</a></li>
+          <li><a href="https://github.com/skrgba/skrgba">GitHub project</a></li>
+          <li><a href="https://mgba.io">mGBA core</a></li>
+          <li><a href="https://solanamobile.com">Solana Mobile</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Legal & Support</h4>
+        <ul>
+          <li><a href="privacy.html">Privacy Policy</a></li>
+          <li><a href="terms.html">Terms of Use</a></li>
+          <li><a href="mailto:seekerboychapter22@gmail.com">Email support</a></li>
+          <li><a href="https://github.com/skrgba/skrgba/issues">Report an issue</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>© 2026 SKR GBA · Built for the Solana ecosystem · v1.0</div>
+      <div class="footer-legal">
+        <a href="privacy.html">Privacy</a>
+        <a href="terms.html">Terms</a>
+        <a href="https://github.com/skrgba/skrgba">GitHub</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Mouse follow glow effect
+(function(){
+  const glow = document.getElementById('mouseGlow');
+  if(!glow) return;
+  let mouseX = 0, mouseY = 0, currentX = 0, currentY = 0;
+  document.addEventListener('mousemove', e => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    glow.style.opacity = '1';
+  });
+  function animate(){
+    currentX += (mouseX - currentX) * 0.1;
+    currentY += (mouseY - currentY) * 0.1;
+    glow.style.transform = `translate(${currentX - 200}px, ${currentY - 200}px)`;
+    requestAnimationFrame(animate);
+  }
+  animate();
+})();
+
+// Scroll-reveal animations
+(function(){
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.section-head, .feature, .step, .specs-card, .wallet, .pricing-card, .philosophy, .faq, .developer-card, .cta-card').forEach(el => {
+    el.classList.add('reveal');
+    observer.observe(el);
+  });
+})();
+</script>
+
+</body>
+</html>

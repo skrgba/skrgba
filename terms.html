@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Terms of Use — SKR GBA</title>
+<meta name="description" content="Terms of Use for SKR GBA — the Game Boy Advance emulator with on-chain licensing on Solana."/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#0a0a0f;--surface:rgba(20,20,32,0.7);--surface-hi:rgba(30,30,48,0.85);
+  --border:rgba(255,255,255,0.08);--border-hi:rgba(255,255,255,0.16);
+  --fg:#ffffff;--fg2:rgba(255,255,255,0.75);--fg3:rgba(255,255,255,0.5);--fg4:rgba(255,255,255,0.35);
+  --purple:#9945FF;--purple-soft:rgba(153,69,255,0.12);
+  --green:#14F195;--green-soft:rgba(20,241,149,0.12);
+  --warn:#ffa500;--warn-soft:rgba(255,165,0,0.12);
+  --sans:'Inter',-apple-system,sans-serif;--mono:'JetBrains Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-weight:400;line-height:1.7;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+
+.ambient{
+  position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(circle 800px at 10% 0%, rgba(153,69,255,0.08) 0%, transparent 50%),
+    radial-gradient(circle 600px at 90% 50%, rgba(20,241,149,0.05) 0%, transparent 50%);
+}
+
+nav{
+  position:fixed;top:0;left:0;right:0;height:68px;
+  display:flex;align-items:center;justify-content:space-between;padding:0 2rem;
+  background:rgba(10,10,15,0.8);backdrop-filter:blur(20px) saturate(180%);
+  border-bottom:1px solid var(--border);z-index:1000;
+}
+.nav-logo{display:flex;align-items:center;gap:.7rem;font-weight:700;font-size:.95rem;letter-spacing:.04em}
+.nav-logo-mark{
+  width:36px;height:36px;border-radius:9px;overflow:hidden;
+  background:#000;box-shadow:0 0 0 1px rgba(255,255,255,0.08),0 0 24px rgba(153,69,255,0.4);
+  flex-shrink:0;
+}
+.nav-logo-mark img{width:100%;height:100%;object-fit:cover;display:block}
+.nav-links{display:flex;gap:2rem;list-style:none;align-items:center}
+.nav-links a{font-size:.875rem;color:var(--fg3);transition:color .15s;font-weight:500}
+.nav-links a:hover,.nav-links a.on{color:var(--fg)}
+.nav-links a.on{color:var(--green)}
+
+.container{max-width:880px;margin:0 auto;padding:0 2rem;position:relative;z-index:10}
+
+.page-head{padding:140px 0 4rem;text-align:center;position:relative;z-index:10}
+.page-tag{
+  display:inline-block;font-family:var(--mono);font-size:.72rem;font-weight:500;
+  color:var(--green);letter-spacing:.18em;text-transform:uppercase;
+  margin-bottom:1rem;padding:.35rem .9rem;background:var(--green-soft);
+  border:1px solid rgba(20,241,149,0.2);border-radius:100px;
+}
+h1{font-size:clamp(2.5rem,5vw,3.75rem);font-weight:800;letter-spacing:-.03em;line-height:1.1;margin-bottom:1rem}
+.page-meta{color:var(--fg3);font-size:.9rem;font-family:var(--mono)}
+
+.toc{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2rem;margin-bottom:4rem}
+.toc-title{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--fg3);font-weight:600;margin-bottom:1rem}
+.toc ol{list-style:none;counter-reset:toc-counter;display:grid;grid-template-columns:1fr 1fr;gap:.5rem 2rem}
+.toc li{counter-increment:toc-counter;font-size:.92rem}
+.toc li::before{content:counter(toc-counter,decimal-leading-zero);color:var(--fg4);font-family:var(--mono);font-size:.78rem;margin-right:.6rem;font-weight:500}
+.toc a{color:var(--fg2);transition:color .15s}
+.toc a:hover{color:var(--fg)}
+
+.prose{padding-bottom:6rem;position:relative;z-index:10}
+.prose section{margin-bottom:3rem}
+.prose h2{
+  font-size:1.5rem;font-weight:700;letter-spacing:-.01em;
+  margin-bottom:1.25rem;padding-bottom:.75rem;border-bottom:1px solid var(--border);
+  display:flex;align-items:baseline;gap:1rem;
+}
+.prose h2 .num{font-family:var(--mono);font-size:.78rem;font-weight:500;color:var(--green);letter-spacing:.12em}
+.prose h3{font-size:1.05rem;font-weight:600;margin:1.5rem 0 .5rem;color:var(--fg)}
+.prose p{font-size:.97rem;color:var(--fg2);line-height:1.75;margin-bottom:1rem}
+.prose p a{color:var(--green);text-decoration:underline;text-underline-offset:3px}
+.prose ul{list-style:none;margin:1rem 0}
+.prose ul li{position:relative;padding-left:1.5rem;margin-bottom:.6rem;font-size:.97rem;color:var(--fg2);line-height:1.7}
+.prose ul li::before{
+  content:'';position:absolute;left:0;top:.7em;
+  width:6px;height:6px;border-radius:50%;
+  background:linear-gradient(135deg,var(--purple),var(--green));
+}
+.prose strong{color:var(--fg);font-weight:600}
+.prose code{background:rgba(255,255,255,0.08);padding:.15rem .45rem;border-radius:4px;font-family:var(--mono);font-size:.88em}
+
+.callout{
+  background:var(--purple-soft);border:1px solid rgba(153,69,255,0.3);
+  border-radius:12px;padding:1.25rem 1.5rem;margin:1.5rem 0;font-size:.95rem;color:var(--fg);
+}
+.callout.warn{background:var(--warn-soft);border-color:rgba(255,165,0,0.3)}
+.callout strong{color:var(--green)}
+.callout.warn strong{color:var(--warn)}
+
+footer{
+  border-top:1px solid var(--border);padding:2.5rem 0;
+  background:rgba(0,0,0,0.4);position:relative;z-index:10;
+  font-size:.85rem;color:var(--fg3);
+}
+.footer-inner{
+  max-width:880px;margin:0 auto;padding:0 2rem;
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;
+}
+.footer-links{display:flex;gap:1.5rem;list-style:none}
+.footer-links a{color:var(--fg3);transition:color .15s}
+.footer-links a:hover{color:var(--fg)}
+
+@media(max-width:768px){
+  nav{padding:0 1.25rem}
+  .nav-links{gap:1rem}
+  .nav-links li:not(.always){display:none}
+  .container{padding:0 1.25rem}
+  .toc ol{grid-template-columns:1fr}
+  .footer-inner{flex-direction:column;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<div class="ambient"></div>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-mark"><img src="assets/logo.png" alt="SKR GBA"/></div>
+    <span>SKR GBA</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html#features">Features</a></li>
+    <li><a href="index.html#pricing">Pricing</a></li>
+    <li><a href="index.html#faq">FAQ</a></li>
+    <li class="always"><a href="privacy.html">Privacy</a></li>
+    <li><a href="terms.html" class="on always">Terms</a></li>
+  </ul>
+</nav>
+
+<header class="page-head">
+  <div class="container">
+    <div class="page-tag">/ Legal · Terms</div>
+    <h1>Terms of Use</h1>
+    <div class="page-meta">Effective: May 10, 2026 · Last updated: May 10, 2026 · SKR GBA v1.0</div>
+  </div>
+</header>
+
+<div class="container">
+  <div class="toc">
+    <div class="toc-title">Table of contents</div>
+    <ol>
+      <li><a href="#acceptance">Acceptance</a></li>
+      <li><a href="#description">Description of service</a></li>
+      <li><a href="#license">License grant</a></li>
+      <li><a href="#roms">ROMs & content</a></li>
+      <li><a href="#payment">Payment & fees</a></li>
+      <li><a href="#blockchain">Blockchain risks</a></li>
+      <li><a href="#prohibited">Prohibited use</a></li>
+      <li><a href="#ip">Intellectual property</a></li>
+      <li><a href="#disclaimer">Disclaimer of warranties</a></li>
+      <li><a href="#liability">Limitation of liability</a></li>
+      <li><a href="#indemnity">Indemnification</a></li>
+      <li><a href="#changes">Changes to terms</a></li>
+      <li><a href="#law">Governing law</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ol>
+  </div>
+</div>
+
+<main class="container prose">
+
+  <section id="acceptance">
+    <h2><span class="num">01</span>Acceptance</h2>
+    <div class="callout"><strong>Important:</strong> By downloading, installing, or using SKR GBA, you agree to be bound by these Terms of Use and our <a href="privacy.html" style="color:var(--green)">Privacy Policy</a>. If you do not agree, do not use the app.</div>
+    <p>These Terms of Use ("Terms") form a binding agreement between you ("user," "you") and the developer of SKR GBA ("we," "us," "the developer"). The Terms govern your use of the SKR GBA Android application and the related website at <a href="https://skrgba.xyz/">skrgba.xyz/</a>.</p>
+    <p>The emulator itself has no age restriction. The content you play (Game Boy Advance games) carries the age rating of each individual title. You are responsible for ensuring that any ROM you load is appropriate for your age. Note that connecting a Solana wallet may be subject to the wallet provider's own terms and age requirements — for example, Phantom and Solflare require users to be the age of majority in their jurisdiction.</p>
+  </section>
+
+  <section id="description">
+    <h2><span class="num">02</span>Description of service</h2>
+    <p>SKR GBA is an Android application that emulates the Nintendo Game Boy Advance handheld console using the open-source <strong>mGBA libretro core</strong>. The app allows users to load their own legally-obtained GBA ROM files and play them on Android devices, with a focus on the Solana Seeker.</p>
+    <p>The app uses the Solana blockchain to manage licensing: a one-time SOL payment serves as proof of license, verified on-chain. SKR GBA is not affiliated with Nintendo, Solana Labs, Solana Mobile, the mGBA project, or any wallet provider.</p>
+  </section>
+
+  <section id="license">
+    <h2><span class="num">03</span>License grant</h2>
+    <p>Subject to your compliance with these Terms, we grant you a <strong>limited, non-exclusive, non-transferable, revocable</strong> license to install and use the SKR GBA application on devices you own or control, for personal, non-commercial purposes.</p>
+    <h3>You may not</h3>
+    <ul>
+      <li>Redistribute SKR GBA under a different name or branding</li>
+      <li>Use SKR GBA for commercial purposes without prior written consent</li>
+      <li>Tamper with, modify, or circumvent the Solana wallet integration or on-chain license verification</li>
+      <li>Remove or alter any copyright notices, attributions, or branding</li>
+      <li>Use the app in any jurisdiction where cryptocurrency or emulation is prohibited by law</li>
+    </ul>
+    <h3>Proprietary license</h3>
+    <p>SKR GBA is proprietary software, copyright © SKRGBA, all rights reserved. The application is closed and not distributed in any form other than the signed APK delivered through the Solana Seeker dApp Store — it remains the exclusive intellectual property of the developer. The repository at <a href="https://github.com/skrgba/skrgba">github.com/skrgba/skrgba</a> contains only this website and its legal pages. The mGBA libretro emulator core, used by SKR GBA, is a separate third-party component subject to its own open licensing terms — see <a href="https://mgba.io">mgba.io</a>.</p>
+  </section>
+
+  <section id="roms">
+    <h2><span class="num">04</span>ROMs & content</h2>
+    <div class="callout warn"><strong>Disclaimer:</strong> SKR GBA does not include, distribute, host, link to, or endorse any Game Boy Advance ROM files or BIOS images. You are solely responsible for the legality of any content you load into the app.</div>
+    <p>The app is an emulator only. You may legally use ROM files in the following circumstances, depending on your jurisdiction:</p>
+    <ul>
+      <li>Backups of GBA cartridges you personally own (in some jurisdictions)</li>
+      <li>Homebrew software you have created or have been licensed to use</li>
+      <li>ROMs in the public domain or freely-distributed by their rights holders</li>
+    </ul>
+    <p>Downloading, distributing, or possessing copyrighted ROM files without authorization may violate copyright law in your jurisdiction. <strong>You assume sole responsibility for ensuring your use of ROMs complies with all applicable laws.</strong></p>
+    <p>We accept no responsibility for how you source, possess, or use Game Boy Advance ROM files.</p>
+  </section>
+
+  <section id="payment">
+    <h2><span class="num">05</span>Payment & fees</h2>
+    <p>SKR GBA charges the following one-time on-chain fees, payable in SOL on the Solana mainnet-beta network:</p>
+    <ul>
+      <li><strong>App License — 0.1 SOL:</strong> Required to unlock core emulator access (load ROMs, save states, custom controls).</li>
+      <li><strong>Anti-Cheat Fee — 0.2 SOL:</strong> Optional. Unlocks the cheat code entry feature (GameShark / Action Replay / Code Breaker). Not required to play any game. The price is deliberately set higher than the App License to discourage cheating.</li>
+    </ul>
+    <h3>How payments work</h3>
+    <p>The app builds a standard SOL transfer transaction directly addressed to the developer's treasury wallet. You sign the transaction in your own Solana wallet app. Access is granted only after the transaction is confirmed and verified on-chain.</p>
+    <h3>Refund policy</h3>
+    <div class="callout warn"><strong>NO REFUNDS. ALL SALES ARE FINAL.</strong> Solana blockchain transactions are irreversible by design and we have no technical means to reverse a confirmed payment. We do not offer refunds, partial refunds, credits, chargebacks, or exchanges for any reason — including but not limited to: change of mind, accidental purchase, dissatisfaction with the app, device incompatibility, ROM problems, wallet errors, or any other circumstance. By signing the on-chain transaction, you acknowledge and accept that the payment is permanent and non-refundable. If you are not certain you want to proceed, do not sign the transaction.</div>
+    <h3>License recovery</h3>
+    <p>Licenses are tied to the Solana wallet address that paid for them. If you reinstall the app or switch devices, reconnecting the same wallet will automatically restore your license — no re-purchase is required.</p>
+    <h3>No subscription</h3>
+    <p>There are no recurring fees, subscription charges, or expiring access periods. The license is permanent for as long as the Solana blockchain and the app continue to operate.</p>
+  </section>
+
+  <section id="blockchain">
+    <h2><span class="num">06</span>Blockchain risks</h2>
+    <p>By using SKR GBA you acknowledge and accept the following risks inherent to blockchain transactions:</p>
+    <ul>
+      <li><strong>Irreversibility:</strong> Confirmed Solana transactions cannot be undone, reversed, or refunded by us, the user, the wallet provider, or Solana Labs.</li>
+      <li><strong>Public visibility:</strong> All Solana transactions are publicly visible on the blockchain. Your wallet address and transaction history are not private.</li>
+      <li><strong>Key custody:</strong> You are solely responsible for the safety of your private keys, seed phrase, and wallet credentials. SKR GBA never has access to them, and we cannot help you recover lost keys.</li>
+      <li><strong>Network fees:</strong> Solana network fees (a small amount of SOL per transaction) are paid by you in addition to the license/anti-cheat fee. Fees are paid to Solana validators, not to us.</li>
+      <li><strong>Network availability:</strong> The Solana network is operated by independent validators. We have no control over network uptime, transaction speed, or fees.</li>
+      <li><strong>Wallet bugs:</strong> Your Solana wallet app is a third-party product. We are not liable for bugs, vulnerabilities, or losses caused by your wallet.</li>
+    </ul>
+    <p>Use of the Solana mainnet involves real cryptocurrency with real value. Use at your own risk.</p>
+  </section>
+
+  <section id="prohibited">
+    <h2><span class="num">07</span>Prohibited use</h2>
+    <p>You agree not to:</p>
+    <ul>
+      <li>Use SKR GBA to play ROM files you do not have a legal right to possess</li>
+      <li>Reverse engineer, decompile, or modify the on-chain license verification logic</li>
+      <li>Attempt to bypass payment requirements, circumvent the cheat-fee gate, or otherwise pirate the app</li>
+      <li>Use SKR GBA to commit fraud, harass others, or distribute malware</li>
+      <li>Use SKR GBA in any way that violates applicable laws or regulations in your jurisdiction</li>
+      <li>Interfere with or disrupt the app's operation, the Solana network, or other users' enjoyment of the app</li>
+    </ul>
+  </section>
+
+  <section id="ip">
+    <h2><span class="num">08</span>Intellectual property</h2>
+    <p>The SKR GBA name, branding, application binaries, codebase, and website design are the exclusive property of the developer.</p>
+    <p>The mGBA libretro emulator core is the property of its respective copyright holders and is used under its applicable open source license. See <a href="https://mgba.io">mgba.io</a> for details.</p>
+    <p>"Game Boy Advance" and related game titles are trademarks of Nintendo. SKR GBA is not affiliated with, endorsed by, or sponsored by Nintendo. We do not claim any rights to Game Boy Advance ROMs or game content.</p>
+    <p>"Solana" and "Seeker" are trademarks of Solana Foundation and Solana Mobile respectively. SKR GBA is built for the Solana ecosystem but is not affiliated with or endorsed by Solana Labs, Solana Foundation, or Solana Mobile.</p>
+  </section>
+
+  <section id="disclaimer">
+    <h2><span class="num">09</span>Disclaimer of warranties</h2>
+    <div class="callout warn"><strong>SKR GBA is provided "as is" and "as available," without warranties of any kind, express or implied.</strong></div>
+    <p>To the maximum extent permitted by law, the developer disclaims all warranties, including but not limited to:</p>
+    <ul>
+      <li>Implied warranties of merchantability, fitness for a particular purpose, and non-infringement</li>
+      <li>Warranties that the app will be uninterrupted, error-free, or free of harmful components</li>
+      <li>Warranties regarding the accuracy, reliability, or completeness of any content or information</li>
+      <li>Warranties that defects will be corrected</li>
+    </ul>
+    <p>Your use of the app is entirely at your own risk.</p>
+  </section>
+
+  <section id="liability">
+    <h2><span class="num">10</span>Limitation of liability</h2>
+    <p>To the maximum extent permitted by applicable law, in no event shall the developer, contributors, or affiliated parties be liable for any indirect, incidental, special, consequential, exemplary, or punitive damages — including but not limited to:</p>
+    <ul>
+      <li>Loss of profits, revenue, or business opportunity</li>
+      <li>Loss of data, including save files or game progress</li>
+      <li>Loss of cryptocurrency, including SOL paid to the app, lost via wallet errors, or lost due to network issues</li>
+      <li>Damage to your device, software, or other property</li>
+      <li>Any damages arising from third-party services (wallet apps, RPC providers, Solana network)</li>
+    </ul>
+    <p>Total cumulative liability of the developer to you, for any cause, shall not exceed the amount you paid for the SKR GBA license (typically 0.1 SOL).</p>
+  </section>
+
+  <section id="indemnity">
+    <h2><span class="num">11</span>Indemnification</h2>
+    <p>You agree to indemnify and hold harmless the developer and contributors from any claims, damages, losses, liabilities, or expenses (including legal fees) arising from:</p>
+    <ul>
+      <li>Your use or misuse of SKR GBA</li>
+      <li>Your violation of these Terms or applicable laws</li>
+      <li>Your use of ROM files you do not have a legal right to possess</li>
+      <li>Your interactions with the Solana blockchain or third-party wallets</li>
+    </ul>
+  </section>
+
+  <section id="changes">
+    <h2><span class="num">12</span>Changes to terms</h2>
+    <p>We may update these Terms from time to time. If we make material changes, we will update the "Last updated" date at the top of this page and announce significant changes via the project's GitHub repository and X account.</p>
+    <p>Continued use of the app after changes are posted constitutes your acceptance of the revised Terms. If you do not agree with the updated Terms, you must stop using the app.</p>
+  </section>
+
+  <section id="law">
+    <h2><span class="num">13</span>Governing law & disputes</h2>
+    <p>These Terms are governed by the laws of the jurisdiction in which the developer resides, without regard to conflict-of-law principles. Any disputes arising from these Terms or your use of SKR GBA shall first be attempted to be resolved informally via the project's GitHub issues.</p>
+    <p>Some jurisdictions do not allow certain disclaimers or limitations of liability, so portions of these Terms may not apply to you. If any provision of these Terms is found unenforceable, the remaining provisions remain in full effect.</p>
+  </section>
+
+  <section id="contact">
+    <h2><span class="num">14</span>Contact & complaints</h2>
+    <p>SKR GBA is developed and maintained by an independent solo developer ("SKRGBA"). For questions about these Terms, support requests, refund inquiries, or any other matter, please contact the developer via:</p>
+    <ul>
+      <li>Email: <a href="mailto:seekerboychapter22@gmail.com">seekerboychapter22@gmail.com</a></li>
+      <li>GitHub Issues: <a href="https://github.com/skrgba/skrgba/issues">github.com/skrgba/skrgba/issues</a></li>
+      <li>X / Twitter: <a href="https://x.com/SKRGBA">x.com/SKRGBA</a></li>
+    </ul>
+    <h3>Solana dApp Store complaints</h3>
+    <p>If you believe SKR GBA violates a <a href="https://docs.solanamobile.com/dapp-store/publisher-policy">Solana Mobile dApp Store Publisher Policy</a>, you may report your concern directly to Solana Mobile at <a href="mailto:concerns@dappstore.solanamobile.com">concerns@dappstore.solanamobile.com</a>.</p>
+  </section>
+
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div>© 2026 SKR GBA · Built for the Solana ecosystem</div>
+    <ul class="footer-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="privacy.html">Privacy</a></li>
+      <li><a href="terms.html">Terms</a></li>
+      <li><a href="https://github.com/skrgba/skrgba">GitHub</a></li>
+      <li><a href="https://x.com/SKRGBA">X</a></li>
+    </ul>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,26 @@
+*.iml
+.gradle
+local.properties
+*.apk
+*.aab
+
+# App source code is proprietary - DO NOT commit
+app/
+build.gradle.kts
+settings.gradle.kts
+gradle.properties
+gradlew
+gradlew.bat
+gradle/
+.kotlin/
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
