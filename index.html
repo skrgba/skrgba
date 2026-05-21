@@ -271,6 +271,94 @@ nav{
 }
 .nav-cta:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(255,255,255,0.15)}
 
+/* ============ MOBILE NAV TOGGLE + MENU ============ */
+.nav-toggle{
+  display:none;
+  width:44px;height:44px;
+  background:transparent;border:none;
+  padding:0;cursor:pointer;
+  position:relative;
+  -webkit-tap-highlight-color:transparent;
+}
+.nav-toggle span{
+  position:absolute;
+  left:10px;right:10px;
+  height:2px;
+  background:var(--fg);
+  border-radius:2px;
+  transition:transform .25s cubic-bezier(.4,0,.2,1),opacity .15s,top .25s;
+}
+.nav-toggle span:nth-child(1){top:14px}
+.nav-toggle span:nth-child(2){top:21px}
+.nav-toggle span:nth-child(3){top:28px}
+body.menu-open .nav-toggle span:nth-child(1){top:21px;transform:rotate(45deg)}
+body.menu-open .nav-toggle span:nth-child(2){opacity:0}
+body.menu-open .nav-toggle span:nth-child(3){top:21px;transform:rotate(-45deg)}
+
+.mobile-menu{
+  position:fixed;
+  top:0;right:0;bottom:0;
+  width:min(85%,360px);
+  background:rgba(10,10,15,0.96);
+  backdrop-filter:blur(28px) saturate(180%);
+  border-left:1px solid var(--border);
+  z-index:999;
+  transform:translateX(100%);
+  transition:transform .3s cubic-bezier(.4,0,.2,1);
+  display:flex;
+  flex-direction:column;
+  padding:90px 1.75rem 2rem;
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+  box-shadow:-20px 0 60px rgba(0,0,0,0.5);
+}
+body.menu-open .mobile-menu{transform:translateX(0)}
+.mobile-menu ul{list-style:none;display:flex;flex-direction:column;gap:.25rem}
+.mobile-menu a{
+  display:flex;align-items:center;
+  padding:1rem 1rem;
+  font-size:1.05rem;font-weight:500;
+  color:var(--fg2);
+  border-radius:12px;
+  transition:background .15s,color .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.mobile-menu a:hover,.mobile-menu a:active{
+  background:rgba(255,255,255,0.05);
+  color:var(--fg);
+}
+.mobile-menu a.cta{
+  margin-top:1.5rem;
+  background:var(--fg);
+  color:#000;
+  font-weight:700;
+  justify-content:center;
+}
+.mobile-menu-footer{
+  margin-top:auto;
+  padding-top:2rem;
+  border-top:1px solid var(--border);
+  font-size:.78rem;
+  color:var(--fg3);
+  text-align:center;
+  line-height:1.7;
+}
+.mobile-menu-footer a{
+  display:inline;padding:0;color:var(--green);font-weight:500;
+}
+
+.mobile-backdrop{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,0.6);
+  backdrop-filter:blur(4px);
+  z-index:998;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .25s;
+}
+body.menu-open .mobile-backdrop{opacity:1;pointer-events:auto}
+body.menu-open{overflow:hidden}
+
 .container{max-width:1200px;margin:0 auto;padding:0 2rem;position:relative;z-index:10}
 .container-narrow{max-width:920px;margin:0 auto;padding:0 2rem;position:relative;z-index:10}
 
@@ -796,8 +884,8 @@ footer{
 
 @media(max-width:900px){
   nav{padding:0 1.25rem}
-  .nav-links{gap:1rem}
-  .nav-links li:not(:last-child){display:none}
+  .nav-links{display:none}      /* desktop list hidden */
+  .nav-toggle{display:block}    /* hamburger shown */
   .hero{padding:100px 0 40px}
   .hero-grid{grid-template-columns:1fr;gap:1.5rem}
   .hero-visual{order:-1;padding:0}
@@ -805,6 +893,25 @@ footer{
   .phone-reflection{height:80px;margin-top:4px}
   .hero-visual::before{width:340px;height:340px;top:0}
   .container,.container-narrow{padding:0 1.25rem}
+  /* Smoother mobile feel */
+  .hero-title{font-size:clamp(2.25rem,9vw,3.5rem)}
+  .hero-sub{font-size:1rem;line-height:1.65}
+  .hero-meta{gap:1.25rem;padding-top:1.5rem}
+  .hero-meta-item{font-size:.78rem}
+  .btn{padding:1rem 1.5rem;font-size:.92rem;min-height:48px}
+  .badge{padding:.75rem 1.1rem;min-height:56px}
+  h2.section-title{font-size:clamp(1.9rem,7vw,2.5rem)}
+  .feat-grid{gap:.75rem}
+  .feature{padding:1.5rem}
+  .step{padding:1.75rem 1.5rem}
+  .pricing-card{padding:2rem 1.5rem}
+  .pricing-amt{font-size:2.75rem}
+  .stats{grid-template-columns:repeat(3,1fr)}
+  .stat{padding:1.25rem .5rem}
+  .stat-num{font-size:1.35rem}
+  .stat-label{font-size:.6rem}
+  .faq summary{padding:1rem 1.25rem;font-size:.95rem}
+  .faq-body{padding:0 1.25rem 1rem;font-size:.9rem}
   .trust-grid{grid-template-columns:repeat(2,1fr);gap:1.5rem}
   .section{padding:4rem 0}
   .steps{grid-template-columns:1fr}
@@ -904,7 +1011,29 @@ footer{
     <li><a href="#faq">FAQ</a></li>
     <li><a href="#download" class="nav-cta">Get the App</a></li>
   </ul>
+  <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<!-- Mobile menu -->
+<div class="mobile-backdrop" id="mobileBackdrop"></div>
+<aside class="mobile-menu" id="mobileMenu" aria-hidden="true">
+  <ul>
+    <li><a href="#features" data-close>Features</a></li>
+    <li><a href="#how" data-close>How it works</a></li>
+    <li><a href="#specs" data-close>Specs</a></li>
+    <li><a href="#pricing" data-close>Pricing</a></li>
+    <li><a href="#faq" data-close>FAQ</a></li>
+    <li><a href="privacy.html">Privacy</a></li>
+    <li><a href="terms.html">Terms</a></li>
+    <li><a href="#download" class="cta" data-close>Get the App</a></li>
+  </ul>
+  <div class="mobile-menu-footer">
+    Contact: <a href="mailto:seekerboychapter22@gmail.com">seekerboychapter22@gmail.com</a><br/>
+    Follow: <a href="https://x.com/SKRGBA">@SKRGBA</a>
+  </div>
+</aside>
 
 <section class="hero">
   <div class="container">
@@ -1349,10 +1478,36 @@ footer{
 </footer>
 
 <script>
-// Mouse follow glow effect
+// Mobile menu
+(function(){
+  const body = document.body;
+  const toggle = document.getElementById('navToggle');
+  const menu = document.getElementById('mobileMenu');
+  const backdrop = document.getElementById('mobileBackdrop');
+  if(!toggle || !menu) return;
+  const open = () => {
+    body.classList.add('menu-open');
+    toggle.setAttribute('aria-expanded','true');
+    menu.setAttribute('aria-hidden','false');
+  };
+  const close = () => {
+    body.classList.remove('menu-open');
+    toggle.setAttribute('aria-expanded','false');
+    menu.setAttribute('aria-hidden','true');
+  };
+  toggle.addEventListener('click', () => {
+    body.classList.contains('menu-open') ? close() : open();
+  });
+  backdrop.addEventListener('click', close);
+  menu.querySelectorAll('a').forEach(a => a.addEventListener('click', close));
+  document.addEventListener('keydown', e => { if(e.key === 'Escape') close(); });
+})();
+
+// Mouse follow glow effect (desktop only - skip on touch devices)
 (function(){
   const glow = document.getElementById('mouseGlow');
   if(!glow) return;
+  if(matchMedia('(hover: none)').matches){ glow.remove(); return; }
   let mouseX = 0, mouseY = 0, currentX = 0, currentY = 0;
   document.addEventListener('mousemove', e => {
     mouseX = e.clientX;
