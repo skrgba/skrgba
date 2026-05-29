@@ -583,44 +583,44 @@ h1.hero-title{
   position:relative;overflow:hidden;
   box-shadow:inset 0 0 0 1px rgba(255,255,255,0.04), 0 0 30px rgba(20,241,149,0.15);
 }
+/* Neutral branded boot screen — no third-party game content */
 .emu-screen-content{
   position:absolute;inset:0;
-  background:linear-gradient(180deg,#5a8a3a 0%,#4a7a30 50%,#3a6a25 100%);
-  display:flex;flex-direction:column;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 40%, rgba(153,69,255,0.35) 0%, transparent 70%),
+    linear-gradient(180deg,#0a0014 0%,#10002a 50%,#05101a 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font-family:var(--display);
+  text-align:center;
+}
+.emu-boot-logo{
+  font-family:var(--display);
+  font-weight:800;
+  font-size:1.4rem;
+  letter-spacing:.12em;
+  background:linear-gradient(135deg,#b87aff 0%,#5fffb8 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:.3rem;
+}
+.emu-boot-sub{
   font-family:var(--mono);
+  font-size:.42rem;
+  letter-spacing:.3em;
+  color:rgba(255,255,255,0.5);
+  text-transform:uppercase;
 }
-/* Top bar - Pokemon-style HUD */
-.gba-hud{
-  display:flex;justify-content:space-between;align-items:center;
-  padding:4px 6px;background:#000;color:#fff;font-size:6px;font-weight:700;
+.emu-boot-status{
+  margin-top:1rem;
+  font-family:var(--mono);
+  font-size:.42rem;
+  letter-spacing:.15em;
+  color:#5fffb8;
+  text-transform:uppercase;
+  display:flex;align-items:center;gap:.3rem;
 }
-.gba-hud span{letter-spacing:.5px}
-/* Battle scene */
-.gba-scene{flex:1;position:relative;padding:6px;display:flex;flex-direction:column;justify-content:space-between}
-.gba-enemy{position:absolute;top:8px;right:14px;text-align:center}
-.gba-pixel{
-  width:28px;height:28px;
-  background:#d97706;
-  clip-path:polygon(50% 0%, 75% 12%, 90% 30%, 95% 50%, 95% 70%, 80% 88%, 60% 95%, 40% 95%, 20% 88%, 5% 70%, 5% 50%, 10% 30%, 25% 12%);
-  position:relative;margin:0 auto;
-  box-shadow:inset -2px -2px 0 rgba(0,0,0,0.3);
-}
-.gba-pixel::before{content:'';position:absolute;top:8px;left:6px;width:4px;height:4px;background:#000;border-radius:50%}
-.gba-pixel::after{content:'';position:absolute;top:8px;right:6px;width:4px;height:4px;background:#000;border-radius:50%}
-.gba-enemy-label{font-size:5px;color:#000;background:#fff;border:1px solid #000;padding:1px 3px;border-radius:2px;margin-top:2px;font-weight:700}
-.gba-player{position:absolute;bottom:30px;left:14px}
-.gba-player-sprite{
-  width:24px;height:30px;background:#2563eb;border-radius:4px 4px 2px 2px;position:relative;
-  box-shadow:inset -2px -2px 0 rgba(0,0,0,0.4);
-}
-.gba-player-sprite::before{
-  content:'';position:absolute;top:3px;left:5px;width:14px;height:10px;
-  background:#fbbf24;border-radius:50%;
-}
-.gba-textbox{
-  position:absolute;bottom:4px;left:4px;right:4px;
-  background:#fff;border:2px solid #000;border-radius:3px;
-  padding:3px 5px;font-size:5px;color:#000;font-weight:700;line-height:1.2;
+.emu-boot-status::before{
+  content:'';width:4px;height:4px;border-radius:50%;background:#14F195;
+  box-shadow:0 0 6px #14F195;
 }
 
 /* Controls section */
@@ -1084,12 +1084,38 @@ footer{
       <div class="hero-visual">
         <div class="phone-stage">
           <div class="phone-frame">
-            <div class="phone-screen">
-              <img src="assets/emulator-screenshot.png" alt="SKR GBA running Pokémon Smaragd-Edition"/>
+            <div class="phone-screen" style="display:flex;flex-direction:column">
+              <div class="emu-header">
+                <div class="emu-brand">SKR GBA</div>
+                <div class="emu-wallet-pill">CsdU…jrUr</div>
+              </div>
+              <div class="emu-screen">
+                <div class="emu-screen-content">
+                  <div class="emu-boot-logo">SKR GBA</div>
+                  <div class="emu-boot-sub">Built for Seeker</div>
+                  <div class="emu-boot-status">License active · Load a ROM</div>
+                </div>
+              </div>
+              <div class="emu-controls">
+                <div class="emu-utility">
+                  <div class="emu-util-btn">📁 ROM</div>
+                  <div class="emu-util-btn">💾 SAVE</div>
+                  <div class="emu-util-btn">📂 LOAD</div>
+                  <div class="emu-util-btn locked">🔒 CHEAT</div>
+                </div>
+                <div class="emu-pad-row">
+                  <div class="emu-dpad"><div class="emu-dpad-bg"></div><div class="emu-dpad-center"></div></div>
+                  <div class="emu-ab">
+                    <div class="emu-btn-circle emu-btn-a">A</div>
+                    <div class="emu-btn-circle emu-btn-b">B</div>
+                  </div>
+                </div>
+                <div class="emu-startselect">
+                  <div class="emu-ss-btn">SELECT</div>
+                  <div class="emu-ss-btn">START</div>
+                </div>
+              </div>
             </div>
-          </div>
-          <div class="phone-reflection" aria-hidden="true">
-            <img src="assets/emulator-screenshot.png" alt=""/>
           </div>
         </div>
       </div>
@@ -1153,7 +1179,7 @@ footer{
       <div class="feature">
         <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></div>
         <h3>Save states + SRAM</h3>
-        <p>Save and load game states anywhere. In-game saves (Pokémon, Zelda, etc.) are written to your device's Documents folder — survives uninstalls.</p>
+        <p>Save and load game states anywhere. In-game battery saves are written to your device storage, and can be backed up to a ZIP from Settings before reinstalling.</p>
       </div>
       <div class="feature">
         <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10"/></svg></div>
@@ -1173,7 +1199,7 @@ footer{
       <div class="feature">
         <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg></div>
         <h3>Cheat codes (optional)</h3>
-        <p>GameShark, Action Replay, and Code Breaker support — but locked behind a 0.2 SOL "Anti-Cheat Fee". We believe games should be earned.</p>
+        <p>Standard GBA cheat-code formats are supported — but locked behind a 0.2 SOL "Anti-Cheat Fee". We believe games should be earned.</p>
       </div>
     </div>
   </div>
@@ -1290,7 +1316,7 @@ footer{
         <div class="pricing-amt">0.2<span class="currency">SOL</span></div>
         <ul class="pricing-list">
           <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Unlocks the cheat code entry dialog</li>
-          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>GameShark / Action Replay / Code Breaker formats</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Standard GBA cheat-code formats</li>
           <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Permanently tied to wallet</li>
           <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Costs more than the license — by design</li>
           <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Not required to play any game</li>
@@ -1299,7 +1325,7 @@ footer{
     </div>
     <div class="philosophy">
       <div class="philosophy-title">— Why the cheat fee costs more —</div>
-      <div class="philosophy-text">Look — we get it, sometimes you just want to one-shot Brock with a Lv5 Pikachu. But pricing cheats at <strong>twice the emulator itself</strong> is a small speed bump to make you think about it first. Beat the gym leaders the honest way. Or pay the toll.</div>
+      <div class="philosophy-text">Look — we get it, sometimes you just want to breeze through a tough boss. But pricing cheats at <strong>twice the emulator itself</strong> is a small speed bump to make you think about it first. Beat it the honest way. Or pay the toll.</div>
     </div>
   </div>
 </section>
@@ -1312,10 +1338,11 @@ footer{
     </div>
     <div class="faq-list">
       <details class="faq">
-        <summary>Does SKR GBA include any ROMs?</summary>
+        <summary>Does SKR GBA include any games or ROMs?</summary>
         <div class="faq-body">
-          <p>No. SKR GBA is an emulator only — it does not include, distribute, or host any Game Boy Advance ROM files. You are responsible for providing your own legally-obtained ROMs.</p>
-          <p>The first time you use the app, it creates a folder at <code>Internal Storage → Documents → SkrGba → ROMs</code>. Copy your own ROMs there so the app can find them.</p>
+          <p>No. SKR GBA is an emulator only. It does not include, bundle, distribute, host, or link to any game ROM files, BIOS images, or copyrighted content whatsoever. It ships completely empty.</p>
+          <p>To play, you load a Game Boy Advance ROM file that <strong>you legally own</strong> through your device's file picker. Sourcing and the legality of any ROM you load is entirely your responsibility.</p>
+          <p>SKR GBA is not affiliated with, endorsed by, or sponsored by Nintendo or any game publisher. "Game Boy Advance" is a trademark of Nintendo.</p>
         </div>
       </details>
       <details class="faq">
