@@ -1204,6 +1204,13 @@ footer{
         <p>Provide your own legally-obtained GBA ROM file. The app loads it into the mGBA core. Your license persists — reinstall the app, switch devices, your license follows your wallet.</p>
       </div>
     </div>
+    <div style="margin-top:2rem;padding:1.25rem 1.5rem;border-radius:14px;background:rgba(255,165,0,0.08);border:1px solid rgba(255,165,0,0.3);display:flex;gap:.85rem;align-items:flex-start">
+      <span style="font-size:1.2rem;line-height:1.4">⚠️</span>
+      <p style="margin:0;font-size:.92rem;color:var(--fg2);line-height:1.6">
+        <strong style="color:#ffa500">Back up before uninstalling.</strong>
+        On Android 11 and newer, storage rules are much stricter — your save files live in the app's private folder and are <strong>erased if you uninstall</strong>. Open <em>Settings → Backup Saves</em> to export them to a ZIP first, then <em>Restore Saves</em> after reinstalling. Your on-chain license is never affected.
+      </p>
+    </div>
   </div>
 </section>
 
@@ -1217,7 +1224,7 @@ footer{
     <div class="specs-card">
       <div class="specs-grid">
         <div class="spec-row"><span class="spec-label">Application ID</span><span class="spec-value">com.skrgba.seeker</span></div>
-        <div class="spec-row"><span class="spec-label">Version</span><span class="spec-value">1.0 (code 1)</span></div>
+        <div class="spec-row"><span class="spec-label">Version</span><span class="spec-value">1.1.2 (code 13)</span></div>
         <div class="spec-row"><span class="spec-label">Minimum Android</span><span class="spec-value">8.0 (API 26)</span></div>
         <div class="spec-row"><span class="spec-label">Target Android</span><span class="spec-value">15 (API 35)</span></div>
         <div class="spec-row"><span class="spec-label">Architectures</span><span class="spec-value">arm64 · armv7 · x86_64</span></div>
@@ -1322,8 +1329,8 @@ footer{
       <details class="faq">
         <summary>What happens if I reinstall the app or get a new device?</summary>
         <div class="faq-body">
-          <p>Your license is tied to your Solana wallet address, not the app installation. After reinstalling or switching devices, just reconnect the same wallet — the app scans your transaction history and automatically restores your license. No re-purchase needed.</p>
-          <p>Your save states and in-game saves are stored in your device's Documents folder and survive app uninstalls on the same device.</p>
+          <p>Your <strong>license</strong> is tied to your Solana wallet address, not the app installation. After reinstalling or switching devices, just reconnect the same wallet — the app scans your transaction history and automatically restores your license. No re-purchase needed.</p>
+          <p><strong>⚠️ Important — back up your save files before uninstalling.</strong> Due to Android 11+ storage rules, save states and battery saves are stored in the app's private folder and are <strong>deleted when you uninstall</strong>. Before removing the app, open <em>Settings → Backup Saves</em> to export all saves into a ZIP file (store it anywhere — Downloads, Google Drive, etc.). After reinstalling, use <em>Settings → Restore Saves</em> to bring them all back. Without a backup, your progress will be lost.</p>
         </div>
       </details>
       <details class="faq">
