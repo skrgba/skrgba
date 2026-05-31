@@ -248,6 +248,7 @@ nav{
   background:rgba(10,10,15,0.8);backdrop-filter:blur(20px) saturate(180%);
   border-bottom:1px solid var(--border);z-index:1000;
 }
+.nav-left{display:flex;align-items:center;gap:.5rem}
 .nav-logo{display:flex;align-items:center;gap:.7rem;font-weight:700;font-size:.95rem;letter-spacing:.04em}
 .nav-logo-mark{
   width:36px;height:36px;border-radius:9px;overflow:hidden;
@@ -928,9 +929,9 @@ footer{
   .nav-toggle{display:block}    /* hamburger shown */
   .hero{padding:100px 0 40px}
   .hero-grid{grid-template-columns:1fr;gap:1.5rem}
-  .hero-visual{order:-1;padding:0}
+  .hero-visual{order:-1;padding:0;overflow:visible}
   .hero-desktop{display:none}
-  .hero-mobile{display:block;width:100%;max-width:none}
+  .hero-mobile{display:block;width:120%;max-width:none;margin-left:-10%}
   .hero-visual::before{width:340px;height:340px;top:0}
   .container,.container-narrow{padding:0 1.25rem}
   /* Smoother mobile feel */
@@ -1039,9 +1040,14 @@ footer{
 <div class="mouse-glow" id="mouseGlow"></div>
 
 <nav>
-  <a href="#" class="nav-logo" aria-label="SKR GBA">
-    <div class="nav-logo-mark"><img src="assets/logo.png" alt="SKR GBA"/></div>
-  </a>
+  <div class="nav-left">
+    <a href="#" class="nav-logo" aria-label="SKR GBA">
+      <div class="nav-logo-mark"><img src="assets/logo.png" alt="SKR GBA"/></div>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
   <ul class="nav-links">
     <li><a href="#features">Features</a></li>
     <li><a href="#how">How it works</a></li>
@@ -1050,9 +1056,6 @@ footer{
     <li><a href="#faq">FAQ</a></li>
     <li><a href="#download" class="nav-cta">Get the App</a></li>
   </ul>
-  <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
-    <span></span><span></span><span></span>
-  </button>
 </nav>
 
 <!-- Mobile menu -->
