@@ -338,13 +338,27 @@ body.menu-open .mobile-menu{transform:translateX(0)}
   margin-top:auto;
   padding-top:2rem;
   border-top:1px solid var(--border);
-  font-size:.78rem;
-  color:var(--fg3);
-  text-align:center;
-  line-height:1.7;
+  width:100%;
 }
-.mobile-menu-footer a{
-  display:inline;padding:0;color:var(--green);font-weight:500;
+.mobile-footer-row{
+  display:flex;
+  gap:1rem;
+}
+.mobile-footer-link{
+  display:flex;align-items:center;gap:.5rem;
+  padding:.75rem 1.2rem;
+  background:rgba(255,255,255,0.06);
+  border:1px solid var(--border);
+  border-radius:12px;
+  color:var(--fg2);
+  font-size:.9rem;font-weight:500;
+  transition:background .15s,color .15s;
+  text-decoration:none;
+  flex:1;justify-content:center;
+}
+.mobile-footer-link:hover,.mobile-footer-link:active{
+  background:rgba(255,255,255,0.1);
+  color:var(--fg);
 }
 
 .mobile-backdrop{
@@ -1071,8 +1085,16 @@ footer{
     <li><a href="#download" class="cta" data-close>Get the App</a></li>
   </ul>
   <div class="mobile-menu-footer">
-    Contact: <a href="mailto:seekerboychapter22@gmail.com">seekerboychapter22@gmail.com</a><br/>
-    Follow: <a href="https://x.com/SKRGBA">@SKRGBA</a>
+    <div class="mobile-footer-row">
+      <a href="mailto:seekerboychapter22@gmail.com" class="mobile-footer-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Email
+      </a>
+      <a href="https://x.com/SKRGBA" class="mobile-footer-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        @SKRGBA
+      </a>
+    </div>
   </div>
 </aside>
 
