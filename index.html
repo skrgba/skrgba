@@ -469,6 +469,7 @@ h1.hero-title{
   z-index:1;
   filter:drop-shadow(0 40px 80px rgba(0,0,0,0.6));
 }
+.hero-mobile{display:none}
 /* Soft single light pool behind device — static, restrained */
 .hero-visual::before{
   content:'';
@@ -928,7 +929,8 @@ footer{
   .hero{padding:100px 0 40px}
   .hero-grid{grid-template-columns:1fr;gap:1.5rem}
   .hero-visual{order:-1;padding:0}
-  .hero-phone-3d{max-width:95vw}
+  .hero-desktop{display:none}
+  .hero-mobile{display:block;max-width:95vw}
   .hero-visual::before{width:340px;height:340px;top:0}
   .container,.container-narrow{padding:0 1.25rem}
   /* Smoother mobile feel */
@@ -1104,7 +1106,8 @@ footer{
         </div>
       </div>
       <div class="hero-visual">
-        <img src="assets/3d.phonemockup.png" alt="SKR GBA emulator on phone — 3D mockup" class="hero-phone-3d"/>
+        <img src="assets/3d.phonemockup.png" alt="SKR GBA emulator on phone — 3D mockup" class="hero-phone-3d hero-desktop"/>
+        <img src="assets/mobilemockup3d.png" alt="SKR GBA emulator on phone — 3D mockup" class="hero-phone-3d hero-mobile"/>
       </div>
     </div>
   </div>
