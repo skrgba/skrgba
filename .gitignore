@@ -4,8 +4,22 @@ local.properties
 *.apk
 *.aab
 
+# Keys & signing material - NEVER commit
+*.jks
+*.keystore
+*.p12
+*.pem
+
 # App source code is proprietary - DO NOT commit
 app/
+
+# Internal material - this public repo is the WEBSITE ONLY
+.claude/
+.idea/
+_design/
+solana theme/
+solana-license-system/
+build.log
 build.gradle.kts
 settings.gradle.kts
 gradle.properties
