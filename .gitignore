@@ -9,6 +9,7 @@ local.properties
 *.keystore
 *.p12
 *.pem
+gbakey
 
 # App source code is proprietary - DO NOT commit
 app/
