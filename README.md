@@ -34,8 +34,8 @@
 
 | Feature | Price | Details |
 | :--- | :--- | :--- |
-| **App License** | 0.1 SOL | Unlocks core emulator access — paid once |
-| **Anti-Cheat Fee** | 0.2 SOL | Optional shame fee to unlock cheat code entry |
+| **App License** | 0.05 SOL | Unlocks core emulator access — paid once |
+| **Anti-Cheat Fee** | 0.1 SOL | Optional shame fee to unlock cheat code entry |
 
 Both payments are tied to your Solana wallet address. If you reinstall the app, they are restored automatically when you reconnect the same wallet — no repurchase needed. All transactions are verified on-chain before access is granted.
 
@@ -86,21 +86,21 @@ The Anti-Cheat Fee deliberately costs more than the App License — we believe g
 | **Hardware** | Solana Seeker *(recommended)* or any Android device with a MWA wallet |
 | **OS** | Android 8.0+ (API 26+) |
 | **Architecture** | ARM64-V8A · ARMv7 · x86_64 |
-| **Wallet** | Solana wallet with ≥ 0.1 SOL |
+| **Wallet** | Solana wallet with ≥ 0.05 SOL |
 
 ### Steps
 
 ```text
-1.  Install    →   Coming soon to the Solana Seeker dApp Store
+1.  Install    →   Available on the Solana Seeker dApp Store
 2.  Connect    →   Tap "Connect Wallet" — approve via your Solana wallet
-3.  License    →   Pay 0.1 SOL once to unlock full emulator access
+3.  License    →   Pay 0.05 SOL once to unlock full emulator access
 4.  Load ROM   →   Import a GBA ROM from your device storage
 5.  Play       →   Your license is saved on-chain and auto-restored on reinstall
 ```
 
 > [!TIP]
-> The 0.1 SOL license fee is paid once and never again — even across reinstalls.  
-> Tap the 🔒 cheat button any time to unlock cheat code entry for an additional 0.2 SOL.
+> The 0.05 SOL license fee is paid once and never again — even across reinstalls.  
+> Tap the 🔒 cheat button any time to unlock cheat code entry for an additional 0.1 SOL.
 
 ---
 
