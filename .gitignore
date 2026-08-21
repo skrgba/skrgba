@@ -39,3 +39,15 @@ gradle/
 /captures
 .externalNativeBuild
 .cxx
+
+# --- 2026-08-21: Dieses Repo ist OEFFENTLICH (GitHub Pages, skrgba.xyz) ---
+# Interne Doku und Spieldaten duerfen hier NIE landen. Ein `git add -A` hatte
+# HANDOFF.md (Session-Uebergabe mit SOL-9-Bugbeschreibung des Lizenzsystems) und
+# einen 4-MB-Pokemon-Speicherstand mit hineingezogen — ungepusht bemerkt und
+# zurueckgenommen. Siehe Fehler-Datenbank PROC-2 / PROC-13.
+HANDOFF.md
+DEV_NOTES_MISTAKES.md
+*.bin
+*.sav
+*.srm
+*.state
